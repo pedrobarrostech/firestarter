@@ -1,0 +1,107 @@
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" routerLink="/">
+      <img src="assets/images/logo.png" alt="Almanaque - Administração" />
+    </a>
+
+    <a id="navToggle" role="button" class="navbar-burger" (click)="toggleCollapse()" [ngClass]="{'is-active': show}">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div *ngIf="auth.user | async; then authenticated else guest">
+        <!-- template will replace this div -->
+  </div>
+
+  <ng-template #guest>
+  </ng-template>
+
+  <ng-template #authenticated>
+
+    <div class="navbar-menu" [ngClass]="{'is-active': show}">
+      <div class="navbar-end">
+        <a class="navbar-item" routerLink="/home"  routerLinkActive="active-page">
+          <span class="icon has-text-warning">
+            <i class="fas fa-home"></i>
+          </span> &nbsp; Home
+        </a>
+        <a class="navbar-item" routerLink="/banners"  routerLinkActive="active-page">
+          <span class="icon has-text-success">
+            <i class="fas fa-image"></i>
+          </span> &nbsp; Banners
+        </a>
+        <a class="navbar-item" routerLink="/sobre" routerLinkActive="active-page">
+          <span class="icon has-text-danger">
+            <i class="fas fa-users"></i>
+          </span> &nbsp; Sobre
+        </a>
+        <a class="navbar-item" routerLink="/eventos" routerLinkActive="active-page">
+          <span class="icon has-text-warning">
+            <i class="fas fa-image"></i>
+          </span> &nbsp; Eventos
+        </a>
+        <a class="navbar-item" routerLink="/minibanners" routerLinkActive="active-page">
+          <span class="icon has-text-danger">
+            <i class="fas fa-images"></i>
+          </span> &nbsp; Minibanners
+        </a>
+
+        <a class="navbar-item" routerLink="/logout" (click)="logout()">
+          <span class="icon has-text-danger">
+            <i class="fas fa-power-off"></i>
+          </span> &nbsp; Logout
+        </a>
+        <!--
+        <a class="navbar-item" routerLink="/banners">
+          <span class="icon has-text-star">
+            <i class="fas fa-image"></i>
+          </span> &nbsp; Notícias
+        </a>
+        <a class="navbar-item" routerLink="/banners">
+          <span class="icon has-text-danger">
+            <i class="fas fa-image"></i>
+          </span> &nbsp; Listas
+        </a>
+        <a class="navbar-item" routerLink="/banners">
+          <span class="icon has-text-danger">
+            <i class="fas fa-image"></i>
+          </span> &nbsp; Minibanners
+        </a>
+
+        <a class="navbar-item" routerLink="/">
+          <span class="icon has-text-danger">
+            <i class="fas fa-image"></i>
+          </span> &nbsp; Whatsapp
+        </a>
+        <a class="navbar-item" routerLink="/banners">
+          <span class="icon has-text-danger">
+            <i class="fas fa-image"></i>
+          </span> &nbsp; Perguntas
+        </a>
+        <a class="navbar-item" routerLink="/banners">
+          <span class="icon has-text-danger">
+            <i class="fas fa-users"></i>
+          </span> &nbsp; Enquetes
+        </a>
+        <a class="navbar-item" routerLink="/banners">
+          <span class="icon has-text-danger">
+            <i class="fas fa-image"></i>
+          </span> &nbsp; Relatórios
+        </a>
+        <a class="navbar-item" routerLink="/banners">
+          <span class="icon has-text-danger">
+            <i class="fas fa-image"></i>
+          </span> &nbsp; Modal
+        </a>
+        <a class="navbar-item" routerLink="/banners">
+          <span class="icon has-text-danger">
+            <i class="fas fa-image"></i>
+          </span> &nbsp; Galerias
+        </a>
+        -->
+      </div>
+    </div>
+  </ng-template>
+</nav>

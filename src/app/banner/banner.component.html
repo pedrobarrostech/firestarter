@@ -1,0 +1,269 @@
+<h1>
+    <span class="icon has-text-success">
+      <i class="fas fa-image"></i>
+    </span> &nbsp; Banners
+  </h1>
+  <hr>
+
+  <div *ngIf="isLoading">
+    <div>
+
+      <h3>
+        <span class="icon has-text-danger">
+          <i class="fas fa-plus"></i>
+        </span> &nbsp; Adicionar novo
+      </h3>
+
+      <form [formGroup]="addBannerForm" (ngSubmit)="addBanner()">
+        <div class="field">
+          <label for="name" class="label">Nome</label>
+          <div class="control">
+            <input class="input" placeholder="Nome" name="name" formControlName="name" type="text" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="name" class="label">Link</label>
+          <div class="control">
+            <input class="input" placeholder="Link" name="link" formControlName="link" type="text" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="name" class="label">Data Inicial</label>
+          <div class="control">
+            <p class="control has-icons-left">
+              <input [owlDateTime]="dateInit" class="input" [owlDateTimeTrigger]="dateInit" name="dateInit" formControlName="dateInit">
+              <span class="icon is-small is-left">
+                <i class="fas fa-calendar-alt"></i>
+              </span>
+            </p>
+            <owl-date-time #dateInit></owl-date-time>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="name" class="label">Data Final</label>
+          <div class="control">
+            <p class="control has-icons-left">
+              <input [owlDateTime]="dateFinal" class="input" [owlDateTimeTrigger]="dateFinal" name="dateFinal" formControlName="dateFinal">
+              <span class="icon is-small is-left">
+                <i class="fas fa-calendar-alt"></i>
+              </span>
+            </p>
+            <owl-date-time #dateFinal></owl-date-time>
+          </div>
+        </div>
+
+        <!-- <div class="field">
+          <label for="name" class="label">Data Inicial</label>
+          <div class="control">
+            <input [owlDateTime]="dateInit" formControlName="dateInit">
+            <span class="trigger" [owlDateTimeTrigger]="dateInit">
+                <i class="fas fa-calendar-alt"></i>
+            </span>
+            <owl-date-time #dateInit></owl-date-time>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="name" class="label">Data Final</label>
+          <div class="control">
+            <input [owlDateTime]="dateFinal" formControlName="dateFinal">
+            <span class="trigger" [owlDateTimeTrigger]="dateFinal">
+                <i class="fas fa-calendar-alt"></i>
+            </span>
+            <owl-date-time #dateFinal></owl-date-time>
+          </div>
+        </div> -->
+
+        <div class="field">
+          <label for="image" class="label">Imagem</label>
+          <div class="file">
+            <label class="file-label">
+              <input class="file-input" type="file" name="image" value="" #fileInput (change)="onFileChange($event)">
+              <span class="file-cta">
+                <span class="file-icon">
+                  <i class="fas fa-upload"></i>
+                </span>
+                <span class="file-label">
+                  Choose a file…
+                </span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="order" class="label">Ordem</label>
+          <div class="control">
+            <input class="input" placeholder="Ordem" name="order" type="text" formControlName="order" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="active" class="label">Ativo</label>
+          <div class="control">
+            <label class="radio">
+              <input type="radio" name="active" formControlName="active" value="1" /> Sim
+            </label>
+            <label class="radio">
+              <input type="radio" name="active" formControlName="active" value="0" /> Não
+            </label>
+          </div>
+        </div>
+        <br />
+        <div class="field">
+          <button type="submit" class="button is-success" name="submit" [disabled]="!addBannerForm.valid">
+            <i class="fa fa-plus"></i> &nbsp; Adicionar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <hr>
+
+
+
+    <div *ngIf="banners">
+      <h3>
+        <span class="icon has-text-warning">
+          <i class="fas fa-image"></i>
+        </span> &nbsp;
+        Banners ({{ banners.length }})
+      </h3>
+
+      <div [hidden]="!infoMsg.body" class="notification is-{{infoMsg.type}}" role="alert">
+        {{infoMsg.body}}
+      </div>
+
+      <div class="table-flex">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped">
+          <thead class="thead-default">
+            <tr>
+              <th width="30%">Nome</th>
+              <th width="20%">Imagem</th>
+              <th width="20%">Ordem</th>
+              <th width="20%">Ativo</th>
+              <th align="center" width="30%">Ações</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="banners.length > 0">
+            <tr *ngFor="let banner of banners">
+              <td>{{banner.name}}</td>
+              <td align="center">
+                <img src="{{ banner.image }}" alt="{{banner.name}}" width="50" />
+              </td>
+              <td align="center">{{banner.order}}</td>
+              <td align="center" class="{{banner.active == 1 ? 'has-text-success': 'has-text-danger'}}">{{banner.active == 1 ? 'Sim': 'Não'}}</td>
+              <td align="center">
+                <button class="button is-small is-warning" (click)="enableEditing(banner)">
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button class="button is-small is-danger" (click)="deleteBanner(banner)">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="isEditing">
+            <tr>
+              <td colspan="5">
+                <form #form="ngForm" (ngSubmit)="editBanner(banner)">
+                  <div class="field">
+                    <label for="name" class="label">Nome</label>
+                    <input class="input" type="text" name="name" placeholder="Name" [(ngModel)]="banner.name" required>
+                  </div>
+
+                  <div class="field">
+                    <label for="name" class="label">Link</label>
+                    <div class="control">
+                      <input class="input" placeholder="Link" name="link" type="text" [(ngModel)]="banner.link" required />
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label for="name" class="label">Data Inicial</label>
+                    <div class="control">
+                      <p class="control has-icons-left">
+                        <input class="input" [owlDateTime]="dateInit" name="dateInit" [owlDateTimeTrigger]="dateInit" [(ngModel)]="banner.dateInit">
+
+                        <span class="icon is-small is-left">
+                          <i class="fas fa-calendar-alt"></i>
+                        </span>
+                      </p>
+                      <owl-date-time #dateInit></owl-date-time>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label for="name" class="label">Data Final</label>
+                    <div class="control">
+                      <p class="control has-icons-left">
+                        <input class="input" [owlDateTime]="dateFinal" name="dateFinal" [owlDateTimeTrigger]="dateFinal" [(ngModel)]="banner.dateFinal">
+
+                        <span class="icon is-small is-left">
+                          <i class="fas fa-calendar-alt"></i>
+                        </span>
+                      </p>
+                      <owl-date-time #dateFinal></owl-date-time>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label for="image" class="label">Imagem</label>
+                    <div class="file">
+                      <label class="file-label">
+                        <input class="file-input" type="file" name="image" value="" (change)="onFileChange($event)">
+                        <span class="file-cta">
+                          <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                          </span>
+                          <span class="file-label">
+                            Choose a file…
+                          </span>
+                        </span>
+                      </label>
+                    </div>
+                    <br />
+                    <img src="{{ banner.image }}" width="50" />
+                  </div>
+
+                  <div class="field">
+                    <label for="order" class="label">Ordem</label>
+                    <input class="input" type="text" name="order" placeholder="Name" [(ngModel)]="banner.order" required>
+                  </div>
+
+                  <div class="field">
+                    <label for="active" class="label">Ativo</label>
+                    <div class="control">
+                      <label class="radio">
+                        <input type="radio" name="active" [(ngModel)]="banner.active" value="1" /> Sim
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="active" [(ngModel)]="banner.active" value="0" /> Não
+                      </label>
+                    </div>
+                  </div>
+
+                  <br />
+
+                  <div class="field">
+                    <button class="button is-success" type="submit" [disabled]="!form.form.valid">
+                      <i class="fa fa-floppy-o"></i> &nbsp; Salvar
+                    </button>
+                    <button class="button is-danger" (click)="cancelEditing()">
+                      <i class="fa fa-times"></i> &nbsp; Cancelar
+                    </button>
+                  </div>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading" class="loading">
+    <img src="assets/images/load.gif" alt="Carregando" />
+  </div>

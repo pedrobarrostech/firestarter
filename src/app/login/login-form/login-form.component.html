@@ -1,0 +1,64 @@
+<!-- <form [formGroup]="userForm" *ngIf="!newUser" (ngSubmit)="login()">
+
+    <h3>Existing User Login</h3>
+    <p class="btn button is-small" (click)="toggleForm()">New User?</p>
+    <hr>
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email2" class="input" formControlName="email" required autocomplete="new-password">
+
+    <div *ngIf="formErrors.email" class="help is-danger">
+        {{ formErrors.email }}
+    </div>
+
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password2" class="input" formControlName="password" required autocomplete="new-password">
+
+    <div *ngIf="formErrors.password" class="help is-danger">
+        {{ formErrors.password }}
+    </div>
+
+    <button type="submit" class="button" [disabled]="!userForm.valid">Submit</button>
+
+    <span *ngIf="userForm.valid" class="help is-success">Form Looks Valid</span>
+
+    <a *ngIf="!passReset && userForm.controls.email.valid" class="help is-info" (click)="resetPassword()">Reset Password for {{userForm.value.email}}?</a>
+    <p *ngIf="passReset" class="help is-info">Reset requested. Check your email instructions.</p>
+
+</form> -->
+
+
+<div class="container has-text-centered">
+    <div class="column is-5 is-offset-2">
+      <h3 class="title has-text-grey">Entrar</h3>
+      <p class="subtitle has-text-grey">Efetue o login abaixo</p>
+      <div class="box">
+        <form [formGroup]="userForm" *ngIf="!newUser" (ngSubmit)="login()">
+
+          <div class="field">
+            <span *ngIf="userForm.valid" class="help is-success">Dados válidos</span>
+          </div>
+
+          <div class="field">
+            <div class="control">
+              <input type="email" id="email" name="email2" class="input" placeholder="E-mail" autofocus="" formControlName="email" required autocomplete="new-password">
+              <div *ngIf="formErrors.email" class="help is-danger">
+                {{ formErrors.email }}
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="control">
+              <input type="password" id="password" name="password2" class="input" placeholder="Senha" formControlName="password" required autocomplete="new-password">
+              <div *ngIf="formErrors.password" class="help is-danger">
+                {{ formErrors.password }}
+              </div>
+            </div>
+          </div>
+
+          <button class="button is-block is-info is-fullwidth is-success" type="submit" [disabled]="!userForm.valid">Logar</button>
+        </form>
+      </div>
+    </div>
+</div>
