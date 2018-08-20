@@ -7,7 +7,7 @@ import { Minibanner } from '../_models/minibanner.model';
 @Injectable()
 export class BannerService  extends FirestoreService<Minibanner>  {
 
-  constructor (public afs: AngularFirestore) {
-    super(afs, `banners`);
+  constructor(public afs: AngularFirestore) {
+    super(afs, 'banners');
   }
 }

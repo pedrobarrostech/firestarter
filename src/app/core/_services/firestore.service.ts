@@ -5,21 +5,21 @@ import { map } from 'rxjs/operators';
 
 export abstract class FirestoreService<T> {
   collection: AngularFirestoreCollection<T>;
-  document:   AngularFirestoreDocument<T>;
+  document: AngularFirestoreDocument<T>;
 
   constructor(protected afs: AngularFirestore, protected type: string) {
     this.collection = this.afs.collection(type);
     this.type = type;
   }
 
-  getData(): Observable<T[]> {
+  getData(): Observable<Array<T>> {
     // ['added', 'modified', 'removed']
     return this.collection.snapshotChanges().pipe(
-      map((actions) => {
-        return actions.map((a) => {
+      map(actions => {
+        return actions.map(a => {
           const data = a.payload.doc.data();
 
-          return Object.assign(data, { id: a.payload.doc.id});
+          return Object.assign(data, {id: a.payload.doc.id});
         });
       })
     );

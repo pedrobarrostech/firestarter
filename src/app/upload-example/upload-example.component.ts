@@ -5,7 +5,7 @@ import {
 } from 'angularfire2/storage';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
-import { tap, finalize } from 'rxjs/operators';
+import { finalize, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'upload-example',
@@ -13,13 +13,6 @@ import { tap, finalize } from 'rxjs/operators';
   styleUrls: ['./upload-example.component.scss']
 })
 export class UploadExampleComponent {
-  // Main task
-  task: AngularFireUploadTask;
-
-  // Progress monitoring
-  percentage: Observable<number>;
-
-  snapshot: Observable<any>;
 
   // Download URL
   downloadURL: Observable<string>;
@@ -27,22 +20,34 @@ export class UploadExampleComponent {
   // State for dropzone CSS toggling
   isHovering: boolean;
 
+  // Progress monitoring
+  percentage: Observable<number>;
+
+  snapshot: Observable<any>;
+  // Main task
+  task: AngularFireUploadTask;
+
   constructor(
     private storage: AngularFireStorage,
     private db: AngularFirestore
   ) {}
 
-  toggleHover(event: boolean) {
-    this.isHovering = event;
+  // Determines if the upload task is active
+  isActive(snapshot): any {
+    return (
+      snapshot.state === 'running' &&
+      snapshot.bytesTransferred < snapshot.totalBytes
+    );
   }
 
-  startUpload(event: FileList) {
+  startUpload(event: FileList): any {
     // The File object
     const file = event.item(0);
 
     // Client-side validation example
     if (file.type.split('/')[0] !== 'image') {
       console.error('unsupported file type :( ');
+
       return;
     }
 
@@ -64,18 +69,12 @@ export class UploadExampleComponent {
           this.db.collection('photos').add({ path, size: snap.totalBytes });
         }
       }),
-      finalize(() => this.downloadURL = this.storage.ref(path).getDownloadURL() )
+      finalize(() => this.downloadURL = this.storage.ref(path).getDownloadURL())
     );
-
-
     // The file's download URL
   }
 
-  // Determines if the upload task is active
-  isActive(snapshot) {
-    return (
-      snapshot.state === 'running' &&
-      snapshot.bytesTransferred < snapshot.totalBytes
-    );
+  toggleHover(event: boolean): void {
+    this.isHovering = event;
   }
 }

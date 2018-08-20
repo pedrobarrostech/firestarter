@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class NotesListComponent implements OnInit {
 
-  notes: Observable<any[]>;
+  notes: Observable<Array<any>>;
   content: string;
 
   constructor(private notesService: NotesService) { }

@@ -1,9 +1,9 @@
-import { TestBed, async } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { NotesModule } from './notes/notes.module';
+import { async, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { UiModule } from './ui/ui.module';
-import { NotesModule } from './notes/notes.module';
+import { RouterTestingModule } from '@angular/router/testing';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireStorageModule } from 'angularfire2/storage';
@@ -31,7 +31,7 @@ describe('AppComponent', () => {
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   }));
-  it(`should have as title 'app'`, async(() => {
+  it("should have as title 'app'", async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app.title).toEqual('app');

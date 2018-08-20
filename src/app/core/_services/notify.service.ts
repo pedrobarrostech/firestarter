@@ -10,17 +10,15 @@ export interface Msg {
 
 @Injectable()
 export class NotifyService {
+  msgSource = new Subject<Msg | null>();
+  msg = this.msgSource.asObservable();
 
-  private _msgSource = new Subject<Msg | null>();
-
-  msg = this._msgSource.asObservable();
-
-  update(content: string, style: 'error' | 'info' | 'success') {
-    const msg: Msg = { content, style };
-    this._msgSource.next(msg);
+  clear(): void {
+    this.msgSource.next(null);
   }
 
-  clear() {
-    this._msgSource.next(null);
+  update(content: string, style: 'error' | 'info' | 'success'): void {
+    const msg: Msg = { content, style };
+    this.msgSource.next(msg);
   }
 }

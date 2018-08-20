@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MinibannerService } from '../core/_services/minibanner.service';
 import { UploadService } from '../core/_services/upload.service';
 import { Subject } from 'rxjs';
@@ -14,52 +14,25 @@ import { DataTableDirective } from 'angular-datatables';
 })
 export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(DataTableDirective)
-  public dtElement: DataTableDirective;
-  public dtTrigger = new Subject();
-  public isLoading = true;
-  public addMinibannerForm: FormGroup;
-  private name = new FormControl('', Validators.required);
-  private order = new FormControl('', Validators.required);
+  addMinibannerForm: FormGroup;
+  dtElement: DataTableDirective;
+  dtTrigger = new Subject();
+  isLoading = true;
+
   private active = new FormControl('', Validators.required);
-  private link = new FormControl('', Validators.required);
-  private infoMsg = { body: '', type: 'info'};
-  private minibanners: any = [];
-  private minibanner = {};
+  private bannerEditImage = {};
+  private dtOptions: DataTables.Settings = {};
   private imageEdit;
   private imageEditRef;
+  private infoMsg = { body: '', type: 'info'};
   private isEditing = false;
-  private dtOptions: DataTables.Settings = {};
-  private bannerEditImage = {};
+  private link = new FormControl('', Validators.required);
+  private minibanner = {};
+  private minibanners: any = [];
+  private name = new FormControl('', Validators.required);
+  private order = new FormControl('', Validators.required);
 
   constructor(private _minibannerService: MinibannerService, private formBuilder: FormBuilder) { }
-
-  ngOnInit(): void {
-    this.dtOptions = datatablesConfig;
-    this.getMinibanners();
-    this.addMinibannerForm = this.formBuilder.group({
-      name: this.name,
-      order: this.order,
-      link: this.link,
-      image: null,
-      imageRef: null,
-      active: this.active
-    });
-  }
-
-  ngAfterViewInit(): void {
-    this.dtTrigger.next();
-  }
-
-  getMinibanners(): void {
-    this._minibannerService.getData().subscribe(
-      data => {
-        this.minibanners = data;
-        this.rerender();
-      },
-      error => console.log(error),
-      () => this.isLoading = false
-    );
-  }
 
   addMinibanner(): void {
     this._minibannerService.create(this.addMinibannerForm.value).then(
@@ -67,8 +40,28 @@ export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
         this.addMinibannerForm.reset();
         this.rerender();
       },
-      error => console.log(error)
+      error => console.error(error)
     );
+  }
+
+  cancelEditing(): void {
+    this.isEditing = false;
+    this.minibanner = {};
+    this.sendInfoMsg('Edição de minibanner cancelada.', 'warning');
+  }
+
+  deleteMinibanner(minibanner): void {
+    if (window.confirm('Tem certeza que quer deletar este minibanner?')) {
+      this._minibannerService.delete(minibanner.id).then(
+        res => {
+          UploadService.deleteFile(minibanner.imageRef);
+          this.sendInfoMsg('Minibanner deletado com sucesso.', 'success');
+          this.getMinibanners();
+          this.rerender();
+        },
+        error => console.error(error)
+      );
+    }
   }
 
   editMinibanner(minibanner): void {
@@ -83,25 +76,48 @@ export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
         this.sendInfoMsg('Minibanner editado com sucesso.', 'success');
         this.rerender();
       },
-      error => console.log(error)
+      error => console.error(error)
     );
   }
 
-  deleteMinibanner(minibanner): void {
-    if (window.confirm('Tem certeza que quer deletar este minibanner?')) {
-      this._minibannerService.delete(minibanner.id).then(
-        res => {
-          UploadService.deleteFile(minibanner.imageRef);
-          this.sendInfoMsg('Minibanner deletado com sucesso.', 'success');
-          this.getMinibanners();
-          this.rerender();
-        },
-        error => console.log(error)
-      );
-    }
+  enableEditing(minibanner): void {
+    this.isEditing = true;
+    this.minibanner = minibanner;
   }
 
-  async onFileChange(event) {
+  getMinibanners(): void {
+    this._minibannerService.getData().subscribe(
+      data => {
+        this.minibanners = data;
+        this.rerender();
+      },
+      error => console.error(error),
+      () => this.isLoading = false
+    );
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next();
+  }
+
+  ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
+  }
+
+  ngOnInit(): void {
+    this.dtOptions = datatablesConfig;
+    this.getMinibanners();
+    this.addMinibannerForm = this.formBuilder.group({
+      name: this.name,
+      order: this.order,
+      link: this.link,
+      image: null,
+      imageRef: null,
+      active: this.active
+    });
+  }
+
+  async onFileChange(event): Promise<void> {
     if (event.target.files && event.target.files.length > 0) {
       const reader = new FileReader();
       const file = event.target.files[0];
@@ -111,8 +127,8 @@ export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
         const filename = UploadService.generateId() + file.name;
         const ref = firebase.storage().ref();
         const storageRef = ref.child(filename);
-        storageRef.put(file).then((snapshot) => {
-          snapshot.ref.getDownloadURL().then((downloadURL) => {
+        storageRef.put(file).then(snapshot => {
+          snapshot.ref.getDownloadURL().then(downloadURL => {
             this.addMinibannerForm.get('image').setValue(downloadURL);
             this.addMinibannerForm.get('imageRef').setValue(filename);
             this.imageEdit = downloadURL;
@@ -121,27 +137,6 @@ export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
         });
       };
     }
-  }
-
-  enableEditing(minibanner): void {
-    this.isEditing = true;
-    this.minibanner = minibanner;
-  }
-
-  cancelEditing(): void {
-    this.isEditing = false;
-    this.minibanner = {};
-    this.sendInfoMsg('Edição de minibanner cancelada.', 'warning');
-  }
-
-  sendInfoMsg(body, type, time = 3000): void {
-    this.infoMsg.body = body;
-    this.infoMsg.type = type;
-    window.setTimeout(() => this.infoMsg.body = '', time);
-  }
-
-  ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
   }
 
   rerender(): void {
@@ -155,4 +150,9 @@ export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  sendInfoMsg(body, type, time = 3000): void {
+    this.infoMsg.body = body;
+    this.infoMsg.type = type;
+    window.setTimeout(() => this.infoMsg.body = '', time);
+  }
 }

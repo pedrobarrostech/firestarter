@@ -9,17 +9,17 @@ import { map } from 'rxjs/operators';
 export class NotesService {
 
   notesCollection: AngularFirestoreCollection<any>;
-  noteDocument:   AngularFirestoreDocument<any>;
+  noteDocument: AngularFirestoreDocument<any>;
 
   constructor(private afs: AngularFirestore) {
-    this.notesCollection = this.afs.collection('notes', (ref) => ref.orderBy('time', 'desc').limit(5));
+    this.notesCollection = this.afs.collection('notes',ref => ref.orderBy('time', 'desc').limit(5));
   }
 
-  getData(): Observable<any[]> {
+  getData(): Observable<Array<any>> {
     // ['added', 'modified', 'removed']
     return this.notesCollection.snapshotChanges().pipe(
-      map((actions) => {
-        return actions.map((a) => {
+      map(actions => {
+        return actions.map(a => {
           const data = a.payload.doc.data();
           return { id: a.payload.doc.id, ...data };
         });
@@ -35,7 +35,7 @@ export class NotesService {
     const note = {
       content,
       hearts: 0,
-      time: new Date().getTime(),
+      time: new Date().getTime()
     };
     return this.notesCollection.add(note);
   }

@@ -5,7 +5,7 @@ import { NotesService } from '../notes.service';
 @Component({
   selector: 'note-detail',
   templateUrl: './note-detail.component.html',
-  styleUrls: ['./note-detail.component.scss'],
+  styleUrls: ['./note-detail.component.scss']
 })
 export class NoteDetailComponent {
 

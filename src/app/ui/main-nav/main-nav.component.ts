@@ -8,16 +8,16 @@ import { AuthService } from '../../core/_services/auth.service';
 })
 export class MainNavComponent {
 
-  public show = false;
+  show = false;
 
   constructor(public auth: AuthService) { }
 
-  toggleCollapse(): void {
-    this.show = !this.show;
-  }
-
   logout(): void {
     this.auth.signOut();
+  }
+
+  toggleCollapse(): void {
+    this.show = !this.show;
   }
 
 }

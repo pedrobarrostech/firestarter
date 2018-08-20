@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { AuthService } from '../../core/_services/auth.service';
 
@@ -9,7 +9,7 @@ type FormErrors = { [u in UserFields]: string };
 @Component({
   selector: 'login-form',
   templateUrl: './login-form.component.html',
-  styleUrls: ['./login-form.component.scss'],
+  styleUrls: ['./login-form.component.scss']
 })
 export class LoginFormComponent implements OnInit {
 
@@ -17,20 +17,20 @@ export class LoginFormComponent implements OnInit {
   newUser = false; // to toggle login or signup form
   passReset = false; // set to true when password reset is triggered
   formErrors: FormErrors = {
-    'email': '',
-    'password': '',
+    email: '',
+    password: ''
   };
   validationMessages = {
-    'email': {
-      'required': 'E-mail é obrigatório.',
-      'email': 'E-mail precisa ser válido.',
+    email: {
+      required: 'E-mail é obrigatório.',
+      email: 'E-mail precisa ser válido.'
     },
-    'password': {
-      'required': 'Senha é obrigatório.',
-      'pattern': 'A senha deve conter letras e números.',
-      'minlength': 'A senha deve ter pelo menos 4 caracteres.',
-      'maxlength': 'A senha não pode ter mais de 40 caracteres.'
-    },
+    password: {
+      required: 'Senha é obrigatório.',
+      pattern: 'A senha deve conter letras e números.',
+      minlength: 'A senha deve ter pelo menos 4 caracteres.',
+      maxlength: 'A senha não pode ter mais de 40 caracteres.'
+    }
   };
 
   constructor(private fb: FormBuilder, private auth: AuthService) { }
@@ -58,18 +58,18 @@ export class LoginFormComponent implements OnInit {
 
   buildForm() {
     this.userForm = this.fb.group({
-      'email': ['', [
+      email: ['', [
         Validators.required,
-        Validators.email,
+        Validators.email
       ]],
-      'password': ['', [
+      password: ['', [
         Validators.pattern('^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$'),
         Validators.minLength(6),
-        Validators.maxLength(25),
-      ]],
+        Validators.maxLength(25)
+      ]]
     });
 
-    this.userForm.valueChanges.subscribe((data) => this.onValueChanged(data));
+    this.userForm.valueChanges.subscribe(data => this.onValueChanged(data));
     this.onValueChanged(); // reset validation messages
   }
 
@@ -86,7 +86,7 @@ export class LoginFormComponent implements OnInit {
           const messages = this.validationMessages[field];
           if (control.errors) {
             for (const key in control.errors) {
-              if (Object.prototype.hasOwnProperty.call(control.errors, key) ) {
+              if (Object.prototype.hasOwnProperty.call(control.errors, key)) {
                 this.formErrors[field] += `${(messages as {[key: string]: string})[key]} `;
               }
             }

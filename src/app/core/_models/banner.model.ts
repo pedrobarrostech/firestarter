@@ -6,7 +6,7 @@ export class Banner {
     public link?: string,
     public dateInit?: string,
     public dateFinal?: string,
-    public image?: string|any,
+    public image?: string | any,
     public order?: number,
     public active?: number) {
   }

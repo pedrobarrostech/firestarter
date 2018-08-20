@@ -6,7 +6,7 @@ import { AuthService } from '../core/_services/auth.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
 
@@ -17,12 +17,12 @@ export class LoginComponent {
 
   async signInWithGithub() {
     await this.auth.githubLogin();
-    return await this.afterSignIn();
+    return this.afterSignIn();
   }
 
   async signInWithGoogle() {
     await this.auth.googleLogin();
-    return await this.afterSignIn();
+    return this.afterSignIn();
   }
 
   async signInWithFacebook() {
@@ -32,14 +32,14 @@ export class LoginComponent {
 
   async signInWithTwitter() {
     await this.auth.twitterLogin();
-    return await this.afterSignIn();
+    return this.afterSignIn();
   }
 
   /// Anonymous Sign In
 
   async signInAnonymously() {
     await this.auth.anonymousLogin();
-    return await this.afterSignIn();
+    return this.afterSignIn();
   }
 
   /// Shared

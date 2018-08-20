@@ -4,7 +4,6 @@ import { NoteDetailComponent } from './note-detail.component';
 import { NotesService } from '../notes.service';
 import { FormsModule } from '@angular/forms';
 
-
 xdescribe('NoteDetailComponent', () => {
   let component: NoteDetailComponent;
   let fixture: ComponentFixture<NoteDetailComponent>;

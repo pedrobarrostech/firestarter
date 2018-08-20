@@ -33,8 +33,8 @@ export class UploadService {
       const filename = this.generateId() + file.name;
       const ref = firebase.storage().ref();
       const storageRef = ref.child(filename);
-      storageRef.put(file).then((snapshot) => {
-        snapshot.ref.getDownloadURL().then((downloadURL) => {
+      storageRef.put(file).then(snapshot => {
+        snapshot.ref.getDownloadURL().then(downloadURL => {
           imageInfo = {
             image: downloadURL,
             imageRef: filename
@@ -52,8 +52,7 @@ export class UploadService {
     }
   }
 
-
-  static generateId () {
+  static generateId() {
     // Math.random should be unique because of its seeding algorithm.
     // Convert it to base 36 (numbers + letters), and grab the first 9 characters
     // after the decimal.
