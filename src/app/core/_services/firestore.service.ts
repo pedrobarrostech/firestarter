@@ -5,8 +5,8 @@ import { map } from 'rxjs/operators';
 import { DocumentReference } from '@firebase/firestore-types';
 
 export abstract class FirestoreService<T> {
-  collection: AngularFirestoreCollection<T>;
-  document: AngularFirestoreDocument<T>;
+  protected collection: AngularFirestoreCollection<T>;
+  protected document: AngularFirestoreDocument<T>;
 
   constructor(protected afs: AngularFirestore, protected type: string) {
     this.collection = this.afs.collection(type);

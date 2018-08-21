@@ -1,7 +1,7 @@
 export class Banner {
 
   constructor(
-    public id?: number,
+    public id?: string,
     public name?: string,
     public link?: string,
     public dateInit?: string,

@@ -17,6 +17,7 @@ import { LoginModule } from './login/login.module';
 import { NotesModule } from './notes/notes.module';
 import { BannerModule } from './banner/banner.module';
 import { MinibannerModule } from './minibanner/minibanner.module';
+import { AboutModule } from './about/about.module';
 
 // AngularFire2 Modules
 import { AngularFireModule } from 'angularfire2';
@@ -37,6 +38,7 @@ import { AngularFireFunctionsModule } from 'angularfire2/functions';
     NotesModule,
     BannerModule,
     MinibannerModule,
+    AboutModule,
     UploadExampleModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,

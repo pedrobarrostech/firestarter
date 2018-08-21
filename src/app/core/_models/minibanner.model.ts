@@ -1,7 +1,7 @@
 export class Minibanner {
 
   constructor(
-    public id?: number,
+    public id?: string,
     public name?: string,
     public link?: string,
     public image?: string | any,
