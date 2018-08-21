@@ -25,26 +25,7 @@ export class UploadService {
   //   }
   // }
 
-  static uploadFile(file) {
-    const reader = new FileReader();
-    let imageInfo = { image: '', imageRef: '' };
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      const filename = this.generateId() + file.name;
-      const ref = firebase.storage().ref();
-      const storageRef = ref.child(filename);
-      storageRef.put(file).then(snapshot => {
-        snapshot.ref.getDownloadURL().then(downloadURL => {
-          imageInfo = {
-            image: downloadURL,
-            imageRef: filename
-          };
-        });
-      });
-      return imageInfo;
-    };
-  }
-  static async deleteFile(imageRef) {
+  static async deleteFile(imageRef): Promise<void> {
     if (imageRef) {
       const ref = firebase.storage().ref();
       const storageRef = ref.child(imageRef);
@@ -52,10 +33,35 @@ export class UploadService {
     }
   }
 
-  static generateId() {
+  static generateId(): string {
     // Math.random should be unique because of its seeding algorithm.
     // Convert it to base 36 (numbers + letters), and grab the first 9 characters
     // after the decimal.
-    return '_' + Math.random().toString(36).substr(2, 9);
+    return `_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  static uploadFile(file): void {
+    const reader = new FileReader();
+    let imageInfo = { image: '', imageRef: '' };
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const filename = this.generateId() + file.name;
+      const ref = firebase.storage().ref();
+      const storageRef = ref.child(filename);
+      storageRef.put(file).then(
+        snapshot => {
+          snapshot.ref.getDownloadURL().then(
+            downloadURL => {
+              imageInfo = {
+                image: downloadURL,
+                imageRef: filename
+              };
+            },
+            error => console.error(error));
+        },
+        error => console.error(error));
+
+      return imageInfo;
+    };
   }
 }

@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { BannerService } from '../core/_services/banner.service';
+import { BannerService } from './banner.service';
 import { UploadService } from '../core/_services/upload.service';
 import { Subject } from 'rxjs';
-import datatablesConfig from '../core/_configs/datatable-pt-br.config';
+import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
 import * as firebase from 'firebase';
 import { DataTableDirective } from 'angular-datatables';
 
@@ -14,22 +14,22 @@ import { DataTableDirective } from 'angular-datatables';
 })
 export class BannerComponent implements OnInit, OnDestroy, AfterViewInit {
   addBannerForm: FormGroup;
+  banner = {};
+  bannerEditImage = {};
+  banners: any = [];
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
+  dtOptions: DataTables.Settings = {};
   dtTrigger = new Subject();
+  isEditing = false;
   isLoading = true;
 
   private active = new FormControl('', Validators.required);
-  private banner = {};
-  private bannerEditImage = {};
-  private banners: any = [];
   private dateFinal = new FormControl('', Validators.required);
   private dateInit = new FormControl('', Validators.required);
-  private dtOptions: DataTables.Settings = {};
   private imageEdit;
   private imageEditRef;
   private infoMsg = { body: '', type: 'info' };
-  private isEditing = false;
   private link = new FormControl('', Validators.required);
   private name = new FormControl('', Validators.required);
   private order = new FormControl('', Validators.required);
@@ -55,11 +55,15 @@ export class BannerComponent implements OnInit, OnDestroy, AfterViewInit {
   deleteBanner(banner): void {
     if (window.confirm('Tem certeza que quer deletar este banner?')) {
       this._bannerService.delete(banner.id).then(
-        res => {
-          UploadService.deleteFile(banner.imageRef);
-          this.sendInfoMsg('Banner deletado com sucesso.', 'success');
-          this.getBanners();
-          this.rerender();
+        () => {
+          UploadService.deleteFile(banner.imageRef).then(
+            () => {
+              this.sendInfoMsg('Banner deletado com sucesso.', 'success');
+              this.getBanners();
+              this.rerender();
+            },
+            error => console.error(error)
+          );
         },
         error => console.error(error)
       );
@@ -73,7 +77,7 @@ export class BannerComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this._bannerService.update(banner.id, banner).then(
-      res => {
+      () => {
         this.isEditing = false;
         this.sendInfoMsg('Banner editado com sucesso.', 'success');
         this.rerender();
@@ -110,7 +114,7 @@ export class BannerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.dtOptions = datatablesConfig;
+    this.dtOptions = DATATABLES_CONFIG;
     this.getBanners();
     this.addBannerForm = this.formBuilder.group({
       name: this.name,
@@ -134,26 +138,34 @@ export class BannerComponent implements OnInit, OnDestroy, AfterViewInit {
         const filename = `${UploadService.generateId()}${file.name}`;
         const ref = firebase.storage().ref();
         const storageRef = ref.child(filename);
-        storageRef.put(file).then(snapshot => {
-          snapshot.ref.getDownloadURL().then(downloadURL => {
-            this.addBannerForm.get('image').setValue(downloadURL);
-            this.addBannerForm.get('imageRef').setValue(filename);
-            this.imageEdit = downloadURL;
-            this.imageEditRef = filename;
-          });
-        });
+        storageRef.put(file).then(
+          snapshot => {
+            snapshot.ref.getDownloadURL().then(
+              downloadURL => {
+                this.addBannerForm.get('image').setValue(downloadURL);
+                this.addBannerForm.get('imageRef').setValue(filename);
+                this.imageEdit = downloadURL;
+                this.imageEditRef = filename;
+              },
+              error => console.error(error));
+          },
+          error => console.error(error)
+        );
       };
     }
   }
 
   rerender(): void {
     if (this.dtElement && this.dtElement.dtInstance) {
-      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        // Destroy the table first
-        dtInstance.destroy();
-        // Call the dtTrigger to rerender again
-        this.dtTrigger.next();
-      });
+      this.dtElement.dtInstance.then(
+        (dtInstance: DataTables.Api) => {
+            // Destroy the table first
+          dtInstance.destroy();
+          // Call the dtTrigger to rerender again
+          this.dtTrigger.next();
+        },
+        error => console.error(error)
+      );
     }
   }
 

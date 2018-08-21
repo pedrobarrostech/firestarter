@@ -1,6 +1,6 @@
 import { inject, TestBed } from '@angular/core/testing';
 
-import { MinibannerService } from '../core/_services/minibanner.service';
+import { MinibannerService } from './minibanner.service';
 
 describe('MinibannersService', () => {
   beforeEach(() => {

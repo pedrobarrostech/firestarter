@@ -85,8 +85,8 @@
       Minibanners ({{ minibanners.length }})
     </h3>
 
-    <div [hidden]="!infoMsg.body" class="notification is-{{infoMsg.type}}" role="alert">
-      {{infoMsg.body}}
+    <div [hidden]="!infoMsg.body" class="notification is-{{ infoMsg.type }}" role="alert">
+      {{ infoMsg.body }}
     </div>
 
     <div class="table-flex">
@@ -102,12 +102,12 @@
         </thead>
         <tbody *ngIf="minibanners.length > 0">
           <tr *ngFor="let minibanner of minibanners">
-            <td>{{minibanner.name}}</td>
+            <td>{{ minibanner.name }}</td>
             <td align="center">
-              <img src="{{ minibanner.image }}" alt="{{minibanner.name}}" width="50" />
+              <img src="{{ minibanner.image }}" alt="{{ minibanner.name }}" width="50" />
             </td>
-            <td align="center">{{minibanner.order}}</td>
-            <td align="center" class="{{minibanner.active == 1 ? 'has-text-success': 'has-text-danger'}}">{{minibanner.active == 1 ? 'Sim': 'Não'}}</td>
+            <td align="center">{{ minibanner.order }}</td>
+            <td align="center" class="{{ minibanner.active == 1 ? 'has-text-success': 'has-text-danger' }}">{{ minibanner.active == 1 ? 'Sim': 'Não' }}</td>
             <td align="center">
               <button class="button is-small is-warning" (click)="enableEditing(minibanner)">
                 <i class="fa fa-edit"></i>

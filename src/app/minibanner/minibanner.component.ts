@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MinibannerService } from '../core/_services/minibanner.service';
+import { MinibannerService } from './minibanner.service';
 import { UploadService } from '../core/_services/upload.service';
 import { Subject } from 'rxjs';
-import datatablesConfig from '../core/_configs/datatable-pt-br.config';
+import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
 import * as firebase from 'firebase';
 import { DataTableDirective } from 'angular-datatables';
 
@@ -15,20 +15,20 @@ import { DataTableDirective } from 'angular-datatables';
 export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(DataTableDirective)
   addMinibannerForm: FormGroup;
+  bannerEditImage = {};
   dtElement: DataTableDirective;
+  dtOptions: DataTables.Settings = {};
   dtTrigger = new Subject();
+  isEditing = false;
   isLoading = true;
+  minibanner = {};
+  minibanners: any = [];
 
   private active = new FormControl('', Validators.required);
-  private bannerEditImage = {};
-  private dtOptions: DataTables.Settings = {};
   private imageEdit;
   private imageEditRef;
   private infoMsg = { body: '', type: 'info'};
-  private isEditing = false;
   private link = new FormControl('', Validators.required);
-  private minibanner = {};
-  private minibanners: any = [];
   private name = new FormControl('', Validators.required);
   private order = new FormControl('', Validators.required);
 
@@ -54,7 +54,11 @@ export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
     if (window.confirm('Tem certeza que quer deletar este minibanner?')) {
       this._minibannerService.delete(minibanner.id).then(
         res => {
-          UploadService.deleteFile(minibanner.imageRef);
+          UploadService.deleteFile(minibanner.imageRef)
+            .then(
+              () => { console.warn('Deleted file!'); },
+              error => console.error(error)
+            );
           this.sendInfoMsg('Minibanner deletado com sucesso.', 'success');
           this.getMinibanners();
           this.rerender();
@@ -105,7 +109,7 @@ export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.dtOptions = datatablesConfig;
+    this.dtOptions = DATATABLES_CONFIG;
     this.getMinibanners();
     this.addMinibannerForm = this.formBuilder.group({
       name: this.name,
@@ -127,26 +131,33 @@ export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
         const filename = UploadService.generateId() + file.name;
         const ref = firebase.storage().ref();
         const storageRef = ref.child(filename);
-        storageRef.put(file).then(snapshot => {
-          snapshot.ref.getDownloadURL().then(downloadURL => {
-            this.addMinibannerForm.get('image').setValue(downloadURL);
-            this.addMinibannerForm.get('imageRef').setValue(filename);
-            this.imageEdit = downloadURL;
-            this.imageEditRef = filename;
-          });
-        });
+        storageRef.put(file).then(
+          snapshot => {
+            snapshot.ref.getDownloadURL().then(
+              downloadURL => {
+                this.addMinibannerForm.get('image').setValue(downloadURL);
+                this.addMinibannerForm.get('imageRef').setValue(filename);
+                this.imageEdit = downloadURL;
+                this.imageEditRef = filename;
+              },
+              error => console.error(error));
+          },
+          error => console.error(error));
       };
     }
   }
 
   rerender(): void {
     if (this.dtElement && this.dtElement.dtInstance) {
-      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        // Destroy the table first
-        dtInstance.destroy();
-        // Call the dtTrigger to rerender again
-        this.dtTrigger.next();
-      });
+      this.dtElement.dtInstance.then(
+        (dtInstance: DataTables.Api) => {
+          // Destroy the table first
+          dtInstance.destroy();
+          // Call the dtTrigger to rerender again
+          this.dtTrigger.next();
+        },
+        error => console.error(error)
+      );
     }
   }
 

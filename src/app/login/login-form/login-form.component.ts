@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AuthService } from '../../core/_services/auth.service';
 
@@ -13,13 +13,13 @@ type FormErrors = { [u in UserFields]: string };
 })
 export class LoginFormComponent implements OnInit {
 
-  userForm: FormGroup;
-  newUser = false; // to toggle login or signup form
-  passReset = false; // set to true when password reset is triggered
   formErrors: FormErrors = {
     email: '',
     password: ''
   };
+  newUser = false; // to toggle login or signup form
+  passReset = false; // set to true when password reset is triggered
+  userForm: FormGroup;
   validationMessages = {
     email: {
       required: 'E-mail é obrigatório.',
@@ -35,28 +35,7 @@ export class LoginFormComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private auth: AuthService) { }
 
-  ngOnInit() {
-    this.buildForm();
-  }
-
-  toggleForm() {
-    this.newUser = !this.newUser;
-  }
-
-  signup() {
-    this.auth.emailSignUp(this.userForm.value['email'], this.userForm.value['password']);
-  }
-
-  login() {
-    this.auth.emailLogin(this.userForm.value['email'], this.userForm.value['password']);
-  }
-
-  resetPassword() {
-    this.auth.resetPassword(this.userForm.value['email'])
-      .then(() => this.passReset = true);
-  }
-
-  buildForm() {
+  buildForm(): void {
     this.userForm = this.fb.group({
       email: ['', [
         Validators.required,
@@ -73,8 +52,20 @@ export class LoginFormComponent implements OnInit {
     this.onValueChanged(); // reset validation messages
   }
 
+  login(): void {
+    this.auth.emailLogin(this.userForm.value['email'], this.userForm.value['password'])
+      .then(
+        () => console.warn('Login success!'),
+        error => console.error(error)
+      );
+  }
+
+  ngOnInit(): void {
+    this.buildForm();
+  }
+
   // Updates validation state on form changes.
-  onValueChanged(data?: any) {
+  onValueChanged(data?: any): void {
     if (!this.userForm) { return; }
     const form = this.userForm;
     for (const field in this.formErrors) {
@@ -94,5 +85,25 @@ export class LoginFormComponent implements OnInit {
         }
       }
     }
+  }
+
+  resetPassword(): void {
+    this.auth.resetPassword(this.userForm.value['email'])
+      .then(
+        () => this.passReset = true,
+        error => console.error(error)
+      );
+  }
+
+  signup(): void {
+    this.auth.emailSignUp(this.userForm.value['email'], this.userForm.value['password'])
+      .then(
+        () => console.warn('Login success!'),
+        error => console.error(error)
+      );
+  }
+
+  toggleForm(): void {
+    this.newUser = !this.newUser;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {
   AngularFireStorage,
   AngularFireUploadTask
@@ -66,7 +66,11 @@ export class UploadExampleComponent {
       tap(snap => {
         if (snap.bytesTransferred === snap.totalBytes) {
           // Update firestore on completion
-          this.db.collection('photos').add({ path, size: snap.totalBytes });
+          this.db.collection('photos').add({ path, size: snap.totalBytes })
+            .then(
+              () => console.warn('Upload success!'),
+              error => console.error(error)
+            );
         }
       }),
       finalize(() => this.downloadURL = this.storage.ref(path).getDownloadURL())

@@ -57,8 +57,15 @@ export class AuthService {
     return this.afAuth.auth
       .signInWithEmailAndPassword(email, password)
       .then(credential => {
-        this.updateUserData(credential.user);
-        this.router.navigate(['/home']);
+        this.updateUserData(credential.user).then(
+          () => { console.warn('Login success'); },
+          error => this.handleError(error)
+        );
+
+        this.router.navigate(['/home']).then(
+          () => { console.warn('Route change'); },
+          error => this.handleError(error)
+        );
       })
       .catch(error => this.handleError(error));
   }
@@ -102,9 +109,15 @@ export class AuthService {
   }
 
   signOut(): void {
-    this.afAuth.auth.signOut().then(() => {
-      this.router.navigate(['/']);
-    });
+    this.afAuth.auth.signOut().then(
+      () => {
+        this.router.navigate(['/']).then(
+          () => { console.warn('Route change'); },
+          error => this.handleError(error)
+        );
+      },
+      error => this.handleError(error)
+    );
   }
 
   twitterLogin(): Promise<void> {

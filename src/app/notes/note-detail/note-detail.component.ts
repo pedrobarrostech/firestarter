@@ -13,16 +13,24 @@ export class NoteDetailComponent {
 
   constructor(private notesService: NotesService) { }
 
-  addHeartToNote(val: number) {
+  addHeartToNote(val: number): void {
     if (this.note.id) {
-      this.notesService.updateNote(this.note.id, { hearts: val + 1 });
+      this.notesService.updateNote(this.note.id, { hearts: val + 1 })
+        .then(
+          () => console.warn('Updated note!'),
+          error => console.error(error)
+        );
     } else {
       console.error('Note missing ID!');
     }
   }
 
-  deleteNote(id: string) {
-    this.notesService.deleteNote(id);
+  deleteNote(id: string): void {
+    this.notesService.deleteNote(id)
+      .then(
+        () => console.warn('Deleted note!'),
+        error => console.error(error)
+      );
   }
 
 }

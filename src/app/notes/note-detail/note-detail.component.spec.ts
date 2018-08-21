@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NoteDetailComponent } from './note-detail.component';
 import { NotesService } from '../notes.service';
-import { FormsModule } from '@angular/forms';
 
 xdescribe('NoteDetailComponent', () => {
   let component: NoteDetailComponent;

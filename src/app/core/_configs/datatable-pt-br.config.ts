@@ -1,4 +1,4 @@
-export default {
+export const DATATABLES_CONFIG = {
     language: {
         emptyTable: 'Nenhum registro encontrado',
         info: 'Mostrando de _START_ até _END_ de _TOTAL_ registros',

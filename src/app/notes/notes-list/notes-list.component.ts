@@ -9,18 +9,21 @@ import { Observable } from 'rxjs';
 })
 export class NotesListComponent implements OnInit {
 
-  notes: Observable<Array<any>>;
   content: string;
+  notes: Observable<Array<any>>;
 
   constructor(private notesService: NotesService) { }
 
-  ngOnInit() {
-    this.notes = this.notesService.getData();
-  }
-
-  clickHandler() {
-    this.notesService.createNote(this.content);
+  clickHandler(): void {
+    this.notesService.createNote(this.content)
+      .then(
+        () => console.warn('Created note!'),
+        error => console.error(error)
+      );
     this.content = '';
   }
 
+  ngOnInit(): void {
+    this.notes = this.notesService.getData();
+  }
 }

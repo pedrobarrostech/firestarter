@@ -8,8 +8,6 @@ import { DataTablesModule } from 'angular-datatables';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFireDatabaseModule } from 'angularfire2/database-deprecated';
 import { CommonModule } from '@angular/common';
-import { BannerService } from './_services/banner.service';
-import { MinibannerService } from './_services/minibanner.service';
 import { UploadService } from './_services/upload.service';
 import { AuthGuard } from './_guards/auth.guard';
 import { AuthService } from './_services/auth.service';
@@ -45,8 +43,6 @@ const DIRECTIVES = [
 const SERVICES = [
   AuthGuard,
   AuthService,
-  BannerService,
-  MinibannerService,
   UploadService,
   NotifyService
 ];
