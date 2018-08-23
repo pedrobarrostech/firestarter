@@ -1,50 +1,46 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { GalleryService } from './gallery.service';
+import { ArticleService } from './article.service';
 import { UploadService } from '../core/_services/upload.service';
-import { Photo } from '../core/_models/photo.model';
 import { Subject } from 'rxjs';
 import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
 import * as firebase from 'firebase';
 import { DataTableDirective } from 'angular-datatables';
 
 @Component({
-  selector: 'app-gallery',
-  templateUrl: './gallery.component.html',
-  styleUrls: ['./gallery.component.scss']
+  selector: 'app-article',
+  templateUrl: './article.component.html',
+  styleUrls: ['./article.component.scss']
 })
-export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
-  addPhotoForm: FormGroup;
+export class ArticleComponent implements OnInit, OnDestroy, AfterViewInit {
+  addArticleForm: FormGroup;
+  article = {};
+  articleEditImage = {};
+  articles: any = [];
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger = new Subject();
-  gallery: any = [];
-  galleryEditImage = {};
   imageUploadStatus = true;
   isEditing = false;
   isLoading = true;
-  // tslint:disable-next-line:no-input-rename
-  @Input('parentId')
-  parentId: string;
-  photo = new Photo();
 
+  private active = new FormControl('', Validators.required);
+  private date = new FormControl('', Validators.required);
+  private description = new FormControl('', Validators.required);
   private imageEdit;
   private imageEditRef;
   private infoMsg = { body: '', type: 'info' };
-  private link = new FormControl('', Validators.required);
   private name = new FormControl('', Validators.required);
-  private order = new FormControl('', Validators.required);
+  private video = new FormControl('');
 
-  constructor(private _galleryService: GalleryService, private formBuilder: FormBuilder) {
-  }
+  constructor(private _articleService: ArticleService, private formBuilder: FormBuilder) { }
 
-  addPhoto(): void {
+  addArticle(): void {
     window.setTimeout(() => {
-      this.addPhotoForm.get('parentId').setValue(this.parentId);
-      this._galleryService.create(this.addPhotoForm.value).then(
+      this._articleService.create(this.addArticleForm.value).then(
         () => {
-          this.addPhotoForm.reset();
+          this.addArticleForm.reset();
           this.rerender();
         },
         error => console.error(error)
@@ -54,18 +50,18 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   cancelEditing(): void {
     this.isEditing = false;
-    this.photo = {};
-    this.sendInfoMsg('Edição de foto cancelada.', 'warning');
+    this.article = {};
+    this.sendInfoMsg('Edição de article cancelada.', 'warning');
   }
 
-  deletePhoto(photo): void {
-    if (window.confirm('Tem certeza que quer deletar este photo?')) {
-      this._galleryService.delete(photo.id).then(
+  deleteArticle(article): void {
+    if (window.confirm('Tem certeza que quer deletar esta notícia?')) {
+      this._articleService.delete(article.id).then(
         () => {
-          UploadService.deleteFile(photo.imageRef).then(
+          UploadService.deleteFile(article.imageRef).then(
             () => {
-              this.sendInfoMsg('Foto apagada com sucesso.', 'success');
-              this.getGallery();
+              this.sendInfoMsg('Notícia deletada com sucesso.', 'success');
+              this.getArticles();
               this.rerender();
             },
             error => console.error(error)
@@ -76,32 +72,33 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  editPhoto(photo): void {
+  editArticle(article): void {
     if (this.imageEdit) {
-      photo.image = this.imageEdit;
-      photo.imageRef = this.imageEditRef;
+      article.image = this.imageEdit;
+      article.imageRef = this.imageEditRef;
     }
 
-    this._galleryService.update(photo.id, photo).then(
+    this._articleService.update(article.id, article).then(
       () => {
         this.isEditing = false;
-        this.sendInfoMsg('Foto editada com sucesso.', 'success');
+        this.sendInfoMsg('Notícia editada com sucesso.', 'success');
         this.rerender();
       },
       error => console.error(error)
     );
   }
 
-  enableEditing(photo): void {
+  enableEditing(article): void {
     this.isEditing = true;
-    this.photo = photo;
+    article.date = new Date(article.date.toMillis());
+    this.article = article;
 
   }
 
-  getGallery(): void {
-    this._galleryService.getData().subscribe(
+  getArticles(): void {
+    this._articleService.getData().subscribe(
       data => {
-        this.gallery = data;
+        this.articles = data;
         this.rerender();
       },
       error => console.error(error),
@@ -119,21 +116,22 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     this.dtOptions = DATATABLES_CONFIG;
-    this.getGallery();
-    this.addPhotoForm = this.formBuilder.group({
+    this.getArticles();
+    this.addArticleForm = this.formBuilder.group({
       name: this.name,
-      link: this.link,
-      order: this.order,
+      video: this.video,
+      date: this.date,
+      description: this.description,
       image: null,
       imageRef: null,
-      parentId: null
+      active: this.active
     });
   }
 
-  async onFileChange(event): Promise<void> {
-    if (event.target.files && event.target.files.length > 0) {
+  async onFileChange(article): Promise<void> {
+    if (article.target.files && article.target.files.length > 0) {
       const reader = new FileReader();
-      const file = event.target.files[0];
+      const file = article.target.files[0];
       this.imageUploadStatus = false;
       reader.readAsDataURL(file);
       reader.onload = () => {
@@ -145,8 +143,8 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
           snapshot => {
             snapshot.ref.getDownloadURL().then(
               downloadURL => {
-                this.addPhotoForm.get('image').setValue(downloadURL);
-                this.addPhotoForm.get('imageRef').setValue(filename);
+                this.addArticleForm.get('image').setValue(downloadURL);
+                this.addArticleForm.get('imageRef').setValue(filename);
                 this.imageEdit = downloadURL;
                 this.imageEditRef = filename;
                 this.imageUploadStatus = true;

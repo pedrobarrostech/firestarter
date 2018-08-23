@@ -1,50 +1,51 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { GalleryService } from './gallery.service';
+import { EventService } from './event.service';
 import { UploadService } from '../core/_services/upload.service';
-import { Photo } from '../core/_models/photo.model';
 import { Subject } from 'rxjs';
 import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
 import * as firebase from 'firebase';
 import { DataTableDirective } from 'angular-datatables';
 
 @Component({
-  selector: 'app-gallery',
-  templateUrl: './gallery.component.html',
-  styleUrls: ['./gallery.component.scss']
+  selector: 'app-event',
+  templateUrl: './event.component.html',
+  styleUrls: ['./event.component.scss']
 })
-export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
-  addPhotoForm: FormGroup;
+export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
+  addEventForm: FormGroup;
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger = new Subject();
-  gallery: any = [];
-  galleryEditImage = {};
+  event = {};
+  eventEditImage = {};
+  events: any = [];
   imageUploadStatus = true;
   isEditing = false;
   isLoading = true;
-  // tslint:disable-next-line:no-input-rename
-  @Input('parentId')
-  parentId: string;
-  photo = new Photo();
 
+  private active = new FormControl('', Validators.required);
+  private date = new FormControl('', Validators.required);
+  private description = new FormControl('', Validators.required);
+  private femalePrice = new FormControl('', Validators.required);
+  private hasList = new FormControl('', Validators.required);
   private imageEdit;
   private imageEditRef;
   private infoMsg = { body: '', type: 'info' };
-  private link = new FormControl('', Validators.required);
+  private limitList = new FormControl('', Validators.required);
+  private malePrice = new FormControl('', Validators.required);
   private name = new FormControl('', Validators.required);
-  private order = new FormControl('', Validators.required);
+  private timeFinishList = new FormControl('', Validators.required);
 
-  constructor(private _galleryService: GalleryService, private formBuilder: FormBuilder) {
-  }
+  constructor(private _eventService: EventService, private formBuilder: FormBuilder) { }
 
-  addPhoto(): void {
+  addEvent(): void {
     window.setTimeout(() => {
-      this.addPhotoForm.get('parentId').setValue(this.parentId);
-      this._galleryService.create(this.addPhotoForm.value).then(
+      console.warn(this.addEventForm.value);
+      this._eventService.create(this.addEventForm.value).then(
         () => {
-          this.addPhotoForm.reset();
+          this.addEventForm.reset();
           this.rerender();
         },
         error => console.error(error)
@@ -54,18 +55,18 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   cancelEditing(): void {
     this.isEditing = false;
-    this.photo = {};
-    this.sendInfoMsg('Edição de foto cancelada.', 'warning');
+    this.event = {};
+    this.sendInfoMsg('Edição de evento cancelada.', 'warning');
   }
 
-  deletePhoto(photo): void {
-    if (window.confirm('Tem certeza que quer deletar este photo?')) {
-      this._galleryService.delete(photo.id).then(
+  deleteEvent(event): void {
+    if (window.confirm('Tem certeza que quer deletar este event?')) {
+      this._eventService.delete(event.id).then(
         () => {
-          UploadService.deleteFile(photo.imageRef).then(
+          UploadService.deleteFile(event.imageRef).then(
             () => {
-              this.sendInfoMsg('Foto apagada com sucesso.', 'success');
-              this.getGallery();
+              this.sendInfoMsg('Evento deletado com sucesso.', 'success');
+              this.getEvents();
               this.rerender();
             },
             error => console.error(error)
@@ -76,32 +77,34 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  editPhoto(photo): void {
+  editEvent(event): void {
     if (this.imageEdit) {
-      photo.image = this.imageEdit;
-      photo.imageRef = this.imageEditRef;
+      event.image = this.imageEdit;
+      event.imageRef = this.imageEditRef;
     }
 
-    this._galleryService.update(photo.id, photo).then(
+    this._eventService.update(event.id, event).then(
       () => {
         this.isEditing = false;
-        this.sendInfoMsg('Foto editada com sucesso.', 'success');
+        this.sendInfoMsg('Evento editado com sucesso.', 'success');
         this.rerender();
       },
       error => console.error(error)
     );
   }
 
-  enableEditing(photo): void {
+  enableEditing(event): void {
     this.isEditing = true;
-    this.photo = photo;
+    event.date = new Date(event.date.toMillis());
+    event.timeFinishList = new Date(event.timeFinishList.toMillis());
+    this.event = event;
 
   }
 
-  getGallery(): void {
-    this._galleryService.getData().subscribe(
+  getEvents(): void {
+    this._eventService.getData().subscribe(
       data => {
-        this.gallery = data;
+        this.events = data;
         this.rerender();
       },
       error => console.error(error),
@@ -119,14 +122,19 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     this.dtOptions = DATATABLES_CONFIG;
-    this.getGallery();
-    this.addPhotoForm = this.formBuilder.group({
+    this.getEvents();
+    this.addEventForm = this.formBuilder.group({
       name: this.name,
-      link: this.link,
-      order: this.order,
+      date: this.date,
+      timeFinishList: this.timeFinishList,
+      malePrice: this.malePrice,
+      femalePrice: this.femalePrice,
+      description: this.description,
       image: null,
       imageRef: null,
-      parentId: null
+      hasList: this.hasList,
+      limitList: this.limitList,
+      active: this.active
     });
   }
 
@@ -145,8 +153,8 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
           snapshot => {
             snapshot.ref.getDownloadURL().then(
               downloadURL => {
-                this.addPhotoForm.get('image').setValue(downloadURL);
-                this.addPhotoForm.get('imageRef').setValue(filename);
+                this.addEventForm.get('image').setValue(downloadURL);
+                this.addEventForm.get('imageRef').setValue(filename);
                 this.imageEdit = downloadURL;
                 this.imageEditRef = filename;
                 this.imageUploadStatus = true;

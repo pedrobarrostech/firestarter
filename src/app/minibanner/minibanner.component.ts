@@ -13,12 +13,13 @@ import { DataTableDirective } from 'angular-datatables';
   styleUrls: ['./minibanner.component.scss']
 })
 export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild(DataTableDirective)
   addMinibannerForm: FormGroup;
   bannerEditImage = {};
+  @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger = new Subject();
+  imageUploadStatus = true;
   isEditing = false;
   isLoading = true;
   minibanner = {};
@@ -35,13 +36,15 @@ export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private _minibannerService: MinibannerService, private formBuilder: FormBuilder) { }
 
   addMinibanner(): void {
-    this._minibannerService.create(this.addMinibannerForm.value).then(
-      res => {
-        this.addMinibannerForm.reset();
-        this.rerender();
-      },
-      error => console.error(error)
-    );
+    window.setTimeout(() => {
+      this._minibannerService.create(this.addMinibannerForm.value).then(
+        res => {
+          this.addMinibannerForm.reset();
+          this.rerender();
+        },
+        error => console.error(error)
+      );
+    }, 1000);
   }
 
   cancelEditing(): void {
@@ -125,6 +128,7 @@ export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
     if (event.target.files && event.target.files.length > 0) {
       const reader = new FileReader();
       const file = event.target.files[0];
+      this.imageUploadStatus = false;
       reader.readAsDataURL(file);
       reader.onload = () => {
 
@@ -139,6 +143,7 @@ export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.addMinibannerForm.get('imageRef').setValue(filename);
                 this.imageEdit = downloadURL;
                 this.imageEditRef = filename;
+                this.imageUploadStatus = true;
               },
               error => console.error(error));
           },

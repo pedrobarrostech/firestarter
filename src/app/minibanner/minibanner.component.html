@@ -155,7 +155,7 @@
 
                 <div class="field">
                   <label for="order" class="label">Ordem</label>
-                  <input class="input" type="text" name="order" placeholder="Name" [(ngModel)]="minibanner.order" required>
+                  <input class="input" type="text" name="order" placeholder="Ordem" [(ngModel)]="minibanner.order" required>
                 </div>
 
 
@@ -174,7 +174,7 @@
                 <br />
 
                 <div class="field">
-                  <button class="button is-success" type="submit" [disabled]="!form.form.valid">
+                  <button class="button is-success" type="submit" [disabled]="!imageUploadStatus">
                     <i class="fa fa-floppy-o"></i> &nbsp; Salvar
                   </button>
                   <button class="button is-danger" (click)="cancelEditing()">

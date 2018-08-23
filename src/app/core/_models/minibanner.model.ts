@@ -5,6 +5,7 @@ export class Minibanner {
     public name?: string,
     public link?: string,
     public image?: string | any,
+    public imageRef?: string,
     public order?: number,
     public active?: number) {
   }

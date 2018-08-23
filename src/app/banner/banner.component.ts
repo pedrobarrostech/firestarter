@@ -21,6 +21,7 @@ export class BannerComponent implements OnInit, OnDestroy, AfterViewInit {
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger = new Subject();
+  imageUploadStatus = true;
   isEditing = false;
   isLoading = true;
 
@@ -37,13 +38,15 @@ export class BannerComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private _bannerService: BannerService, private formBuilder: FormBuilder) { }
 
   addBanner(): void {
-    this._bannerService.create(this.addBannerForm.value).then(
-      res => {
-        this.addBannerForm.reset();
-        this.rerender();
-      },
-      error => console.error(error)
-    );
+    window.setTimeout(() => {
+      this._bannerService.create(this.addBannerForm.value).then(
+        () => {
+          this.addBannerForm.reset();
+          this.rerender();
+        },
+        error => console.error(error)
+      );
+    }, 1000);
   }
 
   cancelEditing(): void {
@@ -132,6 +135,7 @@ export class BannerComponent implements OnInit, OnDestroy, AfterViewInit {
     if (event.target.files && event.target.files.length > 0) {
       const reader = new FileReader();
       const file = event.target.files[0];
+      this.imageUploadStatus = false;
       reader.readAsDataURL(file);
       reader.onload = () => {
 
@@ -146,6 +150,7 @@ export class BannerComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.addBannerForm.get('imageRef').setValue(filename);
                 this.imageEdit = downloadURL;
                 this.imageEditRef = filename;
+                this.imageUploadStatus = true;
               },
               error => console.error(error));
           },

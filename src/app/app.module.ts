@@ -9,7 +9,6 @@ import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
-// Firestarter App Modules
 import { UploadExampleModule } from './upload-example/upload-example.module';
 import { UiModule } from './ui/ui.module';
 import { HomeModule } from './home/home.module';
@@ -18,8 +17,9 @@ import { NotesModule } from './notes/notes.module';
 import { BannerModule } from './banner/banner.module';
 import { MinibannerModule } from './minibanner/minibanner.module';
 import { AboutModule } from './about/about.module';
+import { ArticleModule } from './article/article.module';
+import { EventModule } from './event/event.module';
 
-// AngularFire2 Modules
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireStorageModule } from 'angularfire2/storage';
@@ -39,6 +39,8 @@ import { AngularFireFunctionsModule } from 'angularfire2/functions';
     BannerModule,
     MinibannerModule,
     AboutModule,
+    ArticleModule,
+    EventModule,
     UploadExampleModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,

@@ -23,6 +23,7 @@ export class AboutComponent implements OnInit, OnDestroy, AfterViewInit {
   dtTrigger = new Subject();
   editAboutForm: FormGroup;
   hashtagInstagram = new FormControl('', Validators.required);
+  imageUploadStatus = true;
   isEditing = false;
   isLoading = true;
   name = new FormControl('', Validators.required);

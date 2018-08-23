@@ -24,6 +24,7 @@
               "./node_modules/font-awesome/css/font-awesome.css",
               "./node_modules/bulma-extensions/bulma-pageloader/dist/css/bulma-pageloader.min.css",
               "./node_modules/datatables.net-dt/css/jquery.dataTables.css",
+              "./node_modules/ng-pick-datetime/assets/style/picker.min.css",
               "src/styles.scss"
             ],
             "scripts": [
@@ -85,6 +86,7 @@
               "./node_modules/font-awesome/css/font-awesome.css",
               "./node_modules/bulma-extensions/bulma-pageloader/dist/css/bulma-pageloader.min.css",
               "./node_modules/datatables.net-dt/css/jquery.dataTables.css",
+              "./node_modules/ng-pick-datetime/assets/style/picker.min.css",
               "src/styles.scss"
             ],
             "scripts": [
