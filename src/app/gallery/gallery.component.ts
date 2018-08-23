@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, Input } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { GalleryService } from './gallery.service';
 import { UploadService } from '../core/_services/upload.service';
@@ -21,6 +21,7 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   dtTrigger = new Subject();
   gallery: any = [];
   galleryEditImage = {};
+  imageUploadStatus = true;
   isEditing = false;
   isLoading = true;
   // tslint:disable-next-line:no-input-rename
@@ -35,18 +36,20 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   private name = new FormControl('', Validators.required);
   private order = new FormControl('', Validators.required);
 
-  constructor(private _galleryService: GalleryService, private formBuilder: FormBuilder, elm: ElementRef) {
-    // this.addPhotoForm.get('parentId').setValue(elm.nativeElement.getAttribute('parentId'));
+  constructor(private _galleryService: GalleryService, private formBuilder: FormBuilder) {
   }
 
   addPhoto(): void {
-    this._galleryService.create(this.addPhotoForm.value).then(
-      () => {
-        this.addPhotoForm.reset();
-        this.rerender();
-      },
-      error => console.error(error)
-    );
+    window.setTimeout(() => {
+      this.addPhotoForm.get('parentId').setValue(this.parentId);
+      this._galleryService.create(this.addPhotoForm.value).then(
+        () => {
+          this.addPhotoForm.reset();
+          this.rerender();
+        },
+        error => console.error(error)
+      );
+    }, 1000);
   }
 
   cancelEditing(): void {
@@ -117,6 +120,15 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.dtOptions = DATATABLES_CONFIG;
     this.getGallery();
+    this.addPhotoForm = this.formBuilder.group({
+      name: this.name,
+      link: this.link,
+      order: this.order,
+      image: null,
+      imageRef: null,
+      parentId: null
+    });
+    console.warn(this.imageUploadStatus, this.addPhotoForm.valid);
   }
 
   async onFileChange(event): Promise<void> {
@@ -124,6 +136,7 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
       const reader = new FileReader();
       const file = event.target.files[0];
       reader.readAsDataURL(file);
+      this.imageUploadStatus = false;
       reader.onload = () => {
 
         const filename = `${UploadService.generateId()}${file.name}`;
@@ -137,6 +150,7 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.addPhotoForm.get('imageRef').setValue(filename);
                 this.imageEdit = downloadURL;
                 this.imageEditRef = filename;
+                this.imageUploadStatus = true;
               },
               error => console.error(error));
           },
