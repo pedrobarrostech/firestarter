@@ -49,8 +49,20 @@
           </span> &nbsp; Eventos
         </a>
 
-        <a class="navbar-item" routerLink="/logout" (click)="logout()">
+        <a class="navbar-item" routerLink="/whatsapp" routerLinkActive="active-page">
           <span class="icon has-text-warning">
+            <i class="fas fa-phone"></i>
+          </span> &nbsp; Whatsapp
+        </a>
+
+        <a class="navbar-item" routerLink="/modal" routerLinkActive="active-page">
+          <span class="icon has-text-success">
+            <i class="fas fa-money-check"></i>
+          </span> &nbsp; Modal
+        </a>
+
+        <a class="navbar-item" routerLink="/logout" (click)="logout()">
+          <span class="icon has-text-danger">
             <i class="fas fa-power-off"></i>
           </span> &nbsp; Logout
         </a>

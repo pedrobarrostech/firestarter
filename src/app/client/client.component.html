@@ -1,0 +1,143 @@
+<h1>
+  <span class="icon has-text-success">
+    <i class="fas fa-phone"></i>
+  </span> &nbsp;
+  Whatsapp
+</h1>
+
+<hr />
+
+<div *ngIf="isLoading">
+  <div>
+
+    <h3>
+      <span class="icon has-text-danger">
+        <i class="fas fa-plus"></i>
+      </span> &nbsp;
+      Adicionar novo
+    </h3>
+
+    <form [formGroup]="addClientForm" (ngSubmit)="addClient()">
+      <div class="field">
+        <label for="name" class="label">Nome</label>
+        <div class="control">
+          <input class="input" placeholder="Nome" name="name" formControlName="name" type="text" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="phone" class="label">Telefone</label>
+        <div class="control">
+          <input class="input" placeholder="Telefone" name="phone" formControlName="phone" type="text" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="isOnGroup" class="label">Esta no grupo?</label>
+        <div class="control">
+          <label class="radio">
+            <input type="radio" name="isOnGroup" formControlName="isOnGroup" value="1" /> Sim
+          </label>
+          <label class="radio">
+            <input type="radio" name="isOnGroup" formControlName="isOnGroup" value="0" /> Não
+          </label>
+        </div>
+      </div>
+      <div class="field">
+        <button type="submit" class="button is-success" name="submit" [disabled]="!addClientForm.valid">
+          <i class="fa fa-plus"></i> &nbsp;
+          Adicionar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <hr>
+
+  <div *ngIf="clients">
+    <h3>
+      <span class="icon has-text-warning">
+        <i class="fas fa-phone"></i>
+      </span> &nbsp;
+      Whatsapps ({{ clients.length }})
+    </h3>
+
+    <div [hidden]="!infoMsg.body" class="notification is-{{ infoMsg.type }}" role="alert">
+      {{ infoMsg.body }}
+    </div>
+
+    <div class="table-flex">
+      <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped">
+        <thead class="thead-default">
+          <tr>
+            <th width="30%">Nome</th>
+            <th width="20%">Telefone</th>
+            <th width="20%">Está no grupo?</th>
+            <th align="center" width="30%">Ações</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="clients.length > 0">
+          <tr *ngFor="let client of clients">
+            <td>{{ client.name }}</td>
+            <td align="center">{{ client.phone }}</td>
+            <td align="center" class="{{ client.isOnGroup == 1 ? 'has-text-success': 'has-text-danger' }}">{{ client.isOnGroup == 1 ? 'Sim': 'Não' }}</td>
+            <td align="center">
+              <button class="button is-small is-warning" (click)="enableEditing(client)">
+                <i class="fa fa-edit"></i>
+              </button>
+              <button class="button is-small is-danger" (click)="deleteClient(client)">
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="isEditing">
+          <tr>
+            <td colspan="4">
+              <form #form="ngForm" (ngSubmit)="editClient(client)">
+                <div class="field">
+                  <label for="name" class="label">Nome</label>
+                  <input class="input" type="text" name="name" placeholder="Name" [(ngModel)]="client.name" required>
+                </div>
+
+                <div class="field">
+                  <label for="name" class="label">Telefone</label>
+                  <div class="control">
+                    <input class="input" placeholder="Telefone" name="phone" type="text" [(ngModel)]="client.phone" required />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label for="isOnGroup" class="label">Esta no grupo?</label>
+                  <div class="control">
+                    <label class="radio">
+                      <input type="radio" name="isOnGroup" [(ngModel)]="client.isOnGroup" value="1" /> Sim
+                    </label>
+                    <label class="radio">
+                      <input type="radio" name="isOnGroup" [(ngModel)]="client.isOnGroup" value="0" /> Não
+                    </label>
+                  </div>
+                </div>
+
+                <br />
+
+                <div class="field">
+                  <button class="button is-success" type="submit" [disabled]="!form.form.valid">
+                    <i class="fa fa-floppy-o"></i> &nbsp; Salvar
+                  </button>
+                  <button class="button is-danger" (click)="cancelEditing()">
+                    <i class="fa fa-times"></i> &nbsp; Cancelar
+                  </button>
+                </div>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!isLoading" class="loading">
+  <img src="assets/images/load.gif" alt="Carregando" />
+</div>

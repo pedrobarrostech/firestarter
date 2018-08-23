@@ -19,6 +19,8 @@ import { MinibannerModule } from './minibanner/minibanner.module';
 import { AboutModule } from './about/about.module';
 import { ArticleModule } from './article/article.module';
 import { EventModule } from './event/event.module';
+import { ClientModule } from './client/client.module';
+import { ModalModule } from './modal/modal.module';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
@@ -40,6 +42,8 @@ import { AngularFireFunctionsModule } from 'angularfire2/functions';
     MinibannerModule,
     AboutModule,
     ArticleModule,
+    ClientModule,
+    ModalModule,
     EventModule,
     UploadExampleModule,
     AngularFireModule.initializeApp(environment.firebase),

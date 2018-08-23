@@ -1,0 +1,67 @@
+<h1>
+    <span class="icon has-text-success">
+      <i class="fas fa-money-check"></i>
+    </span> &nbsp; Modal
+  </h1>
+  <hr>
+
+  <div *ngIf="isLoading">
+    <div>
+
+      <h3>
+        <span class="icon has-text-danger">
+          <i class="fas fa-edit"></i>
+        </span> &nbsp; Editar informações
+      </h3>
+
+      <form #form="ngForm" (ngSubmit)="editModal(modal)">
+
+        <div class="field">
+          <label for="image" class="label">Imagem</label>
+          <div class="file">
+            <label class="file-label">
+              <input class="file-input" type="file" name="image" value="" (change)="onFileChange($event)">
+              <span class="file-cta">
+                <span class="file-icon">
+                  <i class="fas fa-upload"></i>
+                </span>
+                <span class="file-label">
+                  Choose a file…
+                </span>
+              </span>
+            </label>
+          </div>
+          <br />
+          <img src="{{ modal.image }}" width="50" />
+        </div>
+
+        <br />
+
+        <div class="field">
+          <label for="active" class="label">Ativo</label>
+          <div class="control">
+            <label class="radio">
+              <input type="radio" name="active" [(ngModel)]="modal.active" value="1" /> Sim
+            </label>
+            <label class="radio">
+              <input type="radio" name="active" [(ngModel)]="modal.active" value="0" /> Não
+            </label>
+          </div>
+        </div>
+
+
+        <div class="field">
+          <button type="submit" class="button is-success" name="submit" [disabled]="!imageUploadStatus">
+            <i class="fa fa-edit"></i> &nbsp; Editar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <hr>
+
+  </div>
+
+  <div *ngIf="!isLoading" class="loading">
+    <img src="assets/images/load.gif" alt="Carregando" />
+  </div>
