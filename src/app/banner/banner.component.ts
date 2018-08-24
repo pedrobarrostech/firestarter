@@ -1,13 +1,14 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
+import * as firebase from 'firebase';
+
+import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
+import { routerTransition } from '../core/_configs/router-transition.config';
+import { ScrollService } from '../core/_services/scroll.service';
 import { BannerService } from './banner.service';
 import { UploadService } from '../core/_services/upload.service';
-import { Subject } from 'rxjs';
-import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
-import * as firebase from 'firebase';
-import { DataTableDirective } from 'angular-datatables';
-import { routerTransition } from '../core/_configs/router-transition.config';
-
 @Component({
   animations: [ routerTransition() ],
   selector: 'app-banner',
@@ -37,7 +38,11 @@ export class BannerComponent implements OnInit, OnDestroy, AfterViewInit {
   private name = new FormControl('', Validators.required);
   private order = new FormControl('', Validators.required);
 
-  constructor(private _bannerService: BannerService, private formBuilder: FormBuilder) { }
+  constructor(
+    private _bannerService: BannerService,
+    private _scrollService: ScrollService,
+    private formBuilder: FormBuilder
+  ) { }
 
   addBanner(): void {
     window.setTimeout(() => {
@@ -45,6 +50,7 @@ export class BannerComponent implements OnInit, OnDestroy, AfterViewInit {
         () => {
           this.addBannerForm.reset();
           this.rerender();
+          this.scrollTo('table');
         },
         error => console.error(error)
       );
@@ -174,6 +180,10 @@ export class BannerComponent implements OnInit, OnDestroy, AfterViewInit {
         error => console.error(error)
       );
     }
+  }
+
+  scrollTo(id): any {
+    this._scrollService.scrollTo(id);
   }
 
   sendInfoMsg(body, type, time = 3000): void {

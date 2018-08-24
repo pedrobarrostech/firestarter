@@ -10,7 +10,9 @@ export class MainNavComponent {
 
   show = false;
 
-  constructor(public auth: AuthService) { }
+  constructor(
+    public auth: AuthService
+  ) { }
 
   logout(): void {
     this.auth.signOut();

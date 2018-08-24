@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
 import { routerTransition } from '../core/_configs/router-transition.config';
 
 @Component({

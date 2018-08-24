@@ -1,14 +1,15 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { BookingService } from './booking.service';
-import { EventService } from '../event/event.service';
-import { Subject } from 'rxjs';
-import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
 import { DataTableDirective } from 'angular-datatables';
 import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+
+import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
 import { Booking } from '../core/_models/booking.model';
 import { routerTransition } from '../core/_configs/router-transition.config';
-
+import { ScrollService } from '../core/_services/scroll.service';
+import { BookingService } from './booking.service';
+import { EventService } from '../event/event.service';
 @Component({
   animations: [ routerTransition() ],
   selector: 'app-booking',
@@ -41,7 +42,8 @@ export class BookingComponent implements OnInit, OnDestroy, AfterViewInit {
     private route: ActivatedRoute,
     private _bookingService: BookingService,
     private _eventService: EventService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private _scrollService: ScrollService
   ) { }
 
   addBooking(): void {
@@ -50,6 +52,7 @@ export class BookingComponent implements OnInit, OnDestroy, AfterViewInit {
         () => {
           this.addBookingForm.reset();
           this.rerender();
+          this.scrollTo('table');
         },
         error => console.error(error)
       );
@@ -150,6 +153,10 @@ export class BookingComponent implements OnInit, OnDestroy, AfterViewInit {
         error => console.error(error)
       );
     }
+  }
+
+  scrollTo(id): any {
+    this._scrollService.scrollTo(id);
   }
 
   sendInfoMsg(body, type, time = 3000): void {

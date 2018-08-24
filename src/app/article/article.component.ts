@@ -7,7 +7,7 @@ import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
 import * as firebase from 'firebase';
 import { DataTableDirective } from 'angular-datatables';
 import { routerTransition } from '../core/_configs/router-transition.config';
-
+import { ScrollService } from '../core/_services/scroll.service';
 @Component({
   animations: [ routerTransition() ],
   selector: 'app-article',
@@ -36,7 +36,7 @@ export class ArticleComponent implements OnInit, OnDestroy, AfterViewInit {
   private name = new FormControl('', Validators.required);
   private video = new FormControl('');
 
-  constructor(private _articleService: ArticleService, private formBuilder: FormBuilder) { }
+  constructor(private _articleService: ArticleService, private _scrollService: ScrollService, private formBuilder: FormBuilder) { }
 
   addArticle(): void {
     window.setTimeout(() => {
@@ -44,6 +44,7 @@ export class ArticleComponent implements OnInit, OnDestroy, AfterViewInit {
         () => {
           this.addArticleForm.reset();
           this.rerender();
+          this.scrollTo('table');
         },
         error => console.error(error)
       );
@@ -171,6 +172,10 @@ export class ArticleComponent implements OnInit, OnDestroy, AfterViewInit {
         error => console.error(error)
       );
     }
+  }
+
+  scrollTo(id): any {
+    this._scrollService.scrollTo(id);
   }
 
   sendInfoMsg(body, type, time = 3000): void {

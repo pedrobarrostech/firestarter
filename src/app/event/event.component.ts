@@ -1,14 +1,15 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { EventService } from './event.service';
-import { UploadService } from '../core/_services/upload.service';
-import { Subject } from 'rxjs';
-import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
-import * as firebase from 'firebase';
 import { DataTableDirective } from 'angular-datatables';
 import { Router } from '@angular/router';
-import { routerTransition } from '../core/_configs/router-transition.config';
+import { Subject } from 'rxjs';
+import * as firebase from 'firebase';
 
+import { ScrollService } from '../core/_services/scroll.service';
+import { EventService } from './event.service';
+import { UploadService } from '../core/_services/upload.service';
+import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
+import { routerTransition } from '../core/_configs/router-transition.config';
 @Component({
   animations: [ routerTransition() ],
   selector: 'app-event',
@@ -41,7 +42,12 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
   private name = new FormControl('', Validators.required);
   private timeFinishList = new FormControl('', Validators.required);
 
-  constructor(private _eventService: EventService, private formBuilder: FormBuilder, private router: Router) { }
+  constructor(
+    private _eventService: EventService,
+    private _scrollService: ScrollService,
+    private router: Router,
+    private formBuilder: FormBuilder
+  ) { }
 
   addEvent(): void {
     window.setTimeout(() => {
@@ -50,6 +56,7 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
         () => {
           this.addEventForm.reset();
           this.rerender();
+          this.scrollTo('table');
         },
         error => console.error(error)
       );
@@ -199,6 +206,10 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
         error => console.error(error)
       );
     }
+  }
+
+  scrollTo(id): any {
+    this._scrollService.scrollTo(id);
   }
 
   sendInfoMsg(body, type, time = 3000): void {

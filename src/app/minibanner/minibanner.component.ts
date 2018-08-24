@@ -1,13 +1,14 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MinibannerService } from './minibanner.service';
-import { UploadService } from '../core/_services/upload.service';
 import { Subject } from 'rxjs';
-import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
 import * as firebase from 'firebase';
 import { DataTableDirective } from 'angular-datatables';
-import { routerTransition } from '../core/_configs/router-transition.config';
 
+import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
+import { routerTransition } from '../core/_configs/router-transition.config';
+import { MinibannerService } from './minibanner.service';
+import { UploadService } from '../core/_services/upload.service';
+import { ScrollService } from '../core/_services/scroll.service';
 @Component({
   animations: [ routerTransition() ],
   selector: 'app-minibanner',
@@ -35,7 +36,11 @@ export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
   private name = new FormControl('', Validators.required);
   private order = new FormControl('', Validators.required);
 
-  constructor(private _minibannerService: MinibannerService, private formBuilder: FormBuilder) { }
+  constructor(
+    private _scrollService: ScrollService,
+    private _minibannerService: MinibannerService,
+    private formBuilder: FormBuilder
+  ) { }
 
   addMinibanner(): void {
     window.setTimeout(() => {
@@ -43,6 +48,7 @@ export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
         res => {
           this.addMinibannerForm.reset();
           this.rerender();
+          this.scrollTo('table');
         },
         error => console.error(error)
       );
@@ -166,6 +172,10 @@ export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
         error => console.error(error)
       );
     }
+  }
+
+  scrollTo(id): any {
+    this._scrollService.scrollTo(id);
   }
 
   sendInfoMsg(body, type, time = 3000): void {
