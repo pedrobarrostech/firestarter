@@ -99,7 +99,7 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getGallery(): void {
-    this._galleryService.getData().subscribe(
+    this._galleryService.getGalleryByParentId(this.parentId).subscribe(
       data => {
         this.gallery = data;
         this.rerender();

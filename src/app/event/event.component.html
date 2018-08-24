@@ -1,4 +1,5 @@
-<h1>
+<div [@routerTransition]> 
+  <h1>
     <span class="icon has-text-success">
       <i class="fas fa-image"></i>
     </span> &nbsp; Eventos
@@ -147,10 +148,10 @@
         <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped">
           <thead class="thead-default">
             <tr>
-              <th width="30%">Nome</th>
-              <th width="20%">Imagem</th>
-              <th width="20%">Ativo</th>
-              <th align="center" width="30%">Ações</th>
+              <th>Nome</th>
+              <th>Imagem</th>
+              <th>Ativo</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody *ngIf="events.length > 0">
@@ -161,6 +162,12 @@
               </td>
               <td align="center" class="{{ event.active == 1 ? 'has-text-success': 'has-text-danger' }}">{{ event.active == 1 ? 'Sim': 'Não' }}</td>
               <td align="center">
+                <button class="button is-small is-link" (click)="galleryEvent(event)">
+                  <i class="fa fa-image"></i>
+                </button>
+                <button class="button is-small is-success" (click)="listEvent(event)">
+                  <i class="fa fa-list-ol"></i>
+                </button>
                 <button class="button is-small is-warning" (click)="enableEditing(event)">
                   <i class="fa fa-edit"></i>
                 </button>
@@ -303,3 +310,4 @@
   <div *ngIf="!isLoading" class="loading">
     <img src="assets/images/load.gif" alt="Carregando" />
   </div>
+</div>

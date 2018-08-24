@@ -2,7 +2,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DocumentReference } from '@firebase/firestore-types';
+import { DocumentData, DocumentReference } from '@firebase/firestore-types';
 
 export abstract class FirestoreService<T> {
   protected collection: AngularFirestoreCollection<T>;
@@ -23,6 +23,14 @@ export abstract class FirestoreService<T> {
 
   get(id: string): AngularFirestoreDocument<T> {
     return this.afs.doc<T>(`${this.type}/${id}`);
+  }
+
+  getById(id: string): Promise<DocumentData> {
+    return this.collection.doc(id).ref.get()
+      .then(
+        doc => doc.data(),
+        error => { throw error; }
+      );
   }
 
   getData(): Observable<Array<T>> {

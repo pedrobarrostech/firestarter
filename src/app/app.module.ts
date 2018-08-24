@@ -13,7 +13,6 @@ import { UploadExampleModule } from './upload-example/upload-example.module';
 import { UiModule } from './ui/ui.module';
 import { HomeModule } from './home/home.module';
 import { LoginModule } from './login/login.module';
-import { NotesModule } from './notes/notes.module';
 import { BannerModule } from './banner/banner.module';
 import { MinibannerModule } from './minibanner/minibanner.module';
 import { AboutModule } from './about/about.module';
@@ -21,6 +20,8 @@ import { ArticleModule } from './article/article.module';
 import { EventModule } from './event/event.module';
 import { ClientModule } from './client/client.module';
 import { ModalModule } from './modal/modal.module';
+import { BookingModule } from './booking/booking.module';
+import { EventGalleryModule } from './event-gallery/event-gallery.module';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
@@ -37,7 +38,6 @@ import { AngularFireFunctionsModule } from 'angularfire2/functions';
     LoginModule,
     HomeModule,
     UiModule,
-    NotesModule,
     BannerModule,
     MinibannerModule,
     AboutModule,
@@ -45,6 +45,8 @@ import { AngularFireFunctionsModule } from 'angularfire2/functions';
     ClientModule,
     ModalModule,
     EventModule,
+    BookingModule,
+    EventGalleryModule,
     UploadExampleModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,

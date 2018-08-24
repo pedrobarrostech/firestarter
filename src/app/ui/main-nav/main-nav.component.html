@@ -1,6 +1,6 @@
 <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
-    <a class="navbar-item" routerLink="/home">
+    <a class="navbar-item" routerLink="/home" routerLinkActive="active-home-page">
       <img src="assets/images/logo.png" alt="Almanaque - Administração" />
     </a>
 
@@ -23,12 +23,12 @@
     <div class="navbar-menu" [ngClass]="{'is-active': show}">
       <div class="navbar-end">
         <a class="navbar-item" routerLink="/banners"  routerLinkActive="active-page">
-          <span class="icon has-text-success">
+          <span class="icon has-text-primary">
             <i class="fas fa-image"></i>
           </span> &nbsp; Banners
         </a>
         <a class="navbar-item" routerLink="/sobre" routerLinkActive="active-page">
-          <span class="icon has-text-danger">
+          <span class="icon has-text-success">
             <i class="fas fa-info"></i>
           </span> &nbsp; Sobre
         </a>
@@ -38,19 +38,19 @@
           </span> &nbsp; Notícias
         </a>
         <a class="navbar-item" routerLink="/minibanners" routerLinkActive="active-page">
-          <span class="icon has-text-success">
+          <span class="icon has-text-danger">
             <i class="fas fa-images"></i>
           </span> &nbsp; Minibanners
         </a>
 
         <a class="navbar-item" routerLink="/eventos" routerLinkActive="active-page">
-          <span class="icon has-text-danger">
+          <span class="icon has-text-primary">
             <i class="fas fa-calendar-alt"></i>
           </span> &nbsp; Eventos
         </a>
 
         <a class="navbar-item" routerLink="/whatsapp" routerLinkActive="active-page">
-          <span class="icon has-text-warning">
+          <span class="icon has-text-primary">
             <i class="fas fa-phone"></i>
           </span> &nbsp; Whatsapp
         </a>
@@ -62,7 +62,7 @@
         </a>
 
         <a class="navbar-item" routerLink="/logout" (click)="logout()">
-          <span class="icon has-text-danger">
+          <span class="icon has-text-warning">
             <i class="fas fa-power-off"></i>
           </span> &nbsp; Logout
         </a>

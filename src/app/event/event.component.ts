@@ -6,8 +6,11 @@ import { Subject } from 'rxjs';
 import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
 import * as firebase from 'firebase';
 import { DataTableDirective } from 'angular-datatables';
+import { Router } from '@angular/router';
+import { routerTransition } from '../core/_configs/router-transition.config';
 
 @Component({
+  animations: [ routerTransition() ],
   selector: 'app-event',
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.scss']
@@ -38,7 +41,7 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
   private name = new FormControl('', Validators.required);
   private timeFinishList = new FormControl('', Validators.required);
 
-  constructor(private _eventService: EventService, private formBuilder: FormBuilder) { }
+  constructor(private _eventService: EventService, private formBuilder: FormBuilder, private router: Router) { }
 
   addEvent(): void {
     window.setTimeout(() => {
@@ -98,7 +101,10 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
     event.date = new Date(event.date.toMillis());
     event.timeFinishList = new Date(event.timeFinishList.toMillis());
     this.event = event;
+  }
 
+  galleryEvent(event): void {
+    this.router.navigate(['/galerias', event.id]);
   }
 
   getEvents(): void {
@@ -110,6 +116,10 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
       error => console.error(error),
       () => this.isLoading = false
     );
+  }
+
+  listEvent(event): void {
+    this.router.navigate(['/reservas', event.id]);
   }
 
   ngAfterViewInit(): void {

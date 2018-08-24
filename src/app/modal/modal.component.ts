@@ -7,8 +7,10 @@ import { Subject } from 'rxjs';
 import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
 import * as firebase from 'firebase';
 import { DataTableDirective } from 'angular-datatables';
+import { routerTransition } from '../core/_configs/router-transition.config';
 
 @Component({
+  animations: [ routerTransition() ],
   selector: 'app-modal',
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss']

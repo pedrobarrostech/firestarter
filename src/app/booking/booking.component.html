@@ -1,9 +1,9 @@
 <div [@routerTransition]>
   <h1>
     <span class="icon has-text-success">
-      <i class="fas fa-phone"></i>
+      <i class="fas fa-list-ol"></i>
     </span> &nbsp;
-    Whatsapp
+    Lista do {{ event.name }}
   </h1>
 
   <hr />
@@ -18,11 +18,18 @@
         Adicionar novo
       </h3>
 
-      <form [formGroup]="addClientForm" (ngSubmit)="addClient()">
+      <form [formGroup]="addBookingForm" (ngSubmit)="addBooking()">
         <div class="field">
           <label for="name" class="label">Nome</label>
           <div class="control">
             <input class="input" placeholder="Nome" name="name" formControlName="name" type="text" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="email" class="label">E-mail</label>
+          <div class="control">
+            <input class="input" placeholder="E-mail" name="email" formControlName="email" type="text" />
           </div>
         </div>
 
@@ -33,19 +40,10 @@
           </div>
         </div>
 
+        <input class="input" placeholder="Evento" name="eventId" formControlName="eventId" type="hidden" />
+
         <div class="field">
-          <label for="isOnGroup" class="label">Esta no grupo?</label>
-          <div class="control">
-            <label class="radio">
-              <input type="radio" name="isOnGroup" formControlName="isOnGroup" value="1" /> Sim
-            </label>
-            <label class="radio">
-              <input type="radio" name="isOnGroup" formControlName="isOnGroup" value="0" /> Não
-            </label>
-          </div>
-        </div>
-        <div class="field">
-          <button type="submit" class="button is-success" name="submit" [disabled]="!addClientForm.valid">
+          <button type="submit" class="button is-success" name="submit" [disabled]="!addBookingForm.valid">
             <i class="fa fa-plus"></i> &nbsp;
             Adicionar
           </button>
@@ -55,12 +53,12 @@
 
     <hr>
 
-    <div *ngIf="clients">
+    <div *ngIf="bookings">
       <h3>
         <span class="icon has-text-warning">
-          <i class="fas fa-phone"></i>
+          <i class="fas fa-list-ol"></i>
         </span> &nbsp;
-        Whatsapps ({{ clients.length }})
+        Lista do {{ event.name }} ({{ bookings.length }})
       </h3>
 
       <div [hidden]="!infoMsg.body" class="notification is-{{ infoMsg.type }}" role="alert">
@@ -73,20 +71,20 @@
             <tr>
               <th width="30%">Nome</th>
               <th width="20%">Telefone</th>
-              <th width="20%">Está no grupo?</th>
+              <th width="20%">E-mail</th>
               <th align="center" width="30%">Ações</th>
             </tr>
           </thead>
-          <tbody *ngIf="clients.length > 0">
-            <tr *ngFor="let client of clients">
-              <td>{{ client.name }}</td>
-              <td align="center">{{ client.phone }}</td>
-              <td align="center" class="{{ client.isOnGroup == 1 ? 'has-text-success': 'has-text-danger' }}">{{ client.isOnGroup == 1 ? 'Sim': 'Não' }}</td>
+          <tbody *ngIf="bookings.length > 0">
+            <tr *ngFor="let booking of bookings">
+              <td>{{ booking.name }}</td>
+              <td align="center">{{ booking.phone }}</td>
+              <td align="center">{{ booking.email }}</td>
               <td align="center">
-                <button class="button is-small is-warning" (click)="enableEditing(client)">
+                <button class="button is-small is-warning" (click)="enableEditing(booking)">
                   <i class="fa fa-edit"></i>
                 </button>
-                <button class="button is-small is-danger" (click)="deleteClient(client)">
+                <button class="button is-small is-danger" (click)="deleteBooking(booking)">
                   <i class="fa fa-trash"></i>
                 </button>
               </td>
@@ -95,28 +93,30 @@
           <tbody *ngIf="isEditing">
             <tr>
               <td colspan="4">
-                <form #form="ngForm" (ngSubmit)="editClient(client)">
+                <form #form="ngForm" (ngSubmit)="editBooking(booking)">
                   <div class="field">
                     <label for="name" class="label">Nome</label>
-                    <input class="input" type="text" name="name" placeholder="Name" [(ngModel)]="client.name" required>
+                    <input class="input" type="text" name="name" placeholder="Name" [(ngModel)]="booking.name" required />
+                  </div>
+
+                  <div class="field">
+                    <label for="name" class="label">E-mail</label>
+                    <div class="control">
+                      <input class="input" placeholder="E-mail" name="email" type="text" [(ngModel)]="booking.email" required />
+                    </div>
                   </div>
 
                   <div class="field">
                     <label for="name" class="label">Telefone</label>
                     <div class="control">
-                      <input class="input" placeholder="Telefone" name="phone" type="text" [(ngModel)]="client.phone" required />
+                      <input class="input" placeholder="Telefone" name="phone" type="text" [(ngModel)]="booking.phone" required />
                     </div>
                   </div>
 
                   <div class="field">
-                    <label for="isOnGroup" class="label">Esta no grupo?</label>
+                    <label for="name" class="label">Evento</label>
                     <div class="control">
-                      <label class="radio">
-                        <input type="radio" name="isOnGroup" [(ngModel)]="client.isOnGroup" value="1" /> Sim
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="isOnGroup" [(ngModel)]="client.isOnGroup" value="0" /> Não
-                      </label>
+                      <input class="input" placeholder="Evento" name="eventId" type="text" [(ngModel)]="booking.eventId" required />
                     </div>
                   </div>
 
