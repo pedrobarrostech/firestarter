@@ -25,8 +25,6 @@ export class ClientComponent implements OnInit, OnDestroy, AfterViewInit {
   isEditing = false;
   isLoading = true;
 
-  private imageEdit;
-  private imageEditRef;
   private infoMsg = { body: '', type: 'info'};
   private isOnGroup = new FormControl('', Validators.required);
   private name = new FormControl('', Validators.required);

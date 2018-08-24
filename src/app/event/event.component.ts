@@ -104,7 +104,12 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   galleryEvent(event): void {
-    this.router.navigate(['/galerias', event.id]);
+    this.router.navigate(['/galerias', event.id]).then(
+      () => {
+        console.warn('Route change');
+      },
+      error => console.error(error)
+    );
   }
 
   getEvents(): void {
@@ -119,7 +124,12 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   listEvent(event): void {
-    this.router.navigate(['/reservas', event.id]);
+    this.router.navigate(['/reservas', event.id]).then(
+      () => {
+        console.warn('Route change');
+      },
+      error => console.error(error)
+    );
   }
 
   ngAfterViewInit(): void {
