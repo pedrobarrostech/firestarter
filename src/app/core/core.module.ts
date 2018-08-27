@@ -8,6 +8,7 @@ import { DataTablesModule } from 'angular-datatables';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFireDatabaseModule } from 'angularfire2/database-deprecated';
 import { CommonModule } from '@angular/common';
+import { NgxTrumbowygModule } from 'ngx-trumbowyg';
 import { UploadService } from './_services/upload.service';
 import { AuthGuard } from './_guards/auth.guard';
 import { AuthService } from './_services/auth.service';
@@ -26,7 +27,8 @@ const MODULES = [
   BrowserAnimationsModule,
   DataTablesModule,
   AngularFireAuthModule,
-  AngularFireDatabaseModule
+  AngularFireDatabaseModule,
+  NgxTrumbowygModule
 ];
 
 const PIPES = [

@@ -130,7 +130,7 @@
             <tr *ngFor="let banner of banners">
               <td>{{ banner.name }}</td>
               <td align="center">
-                <img src="{{ banner.image }}" alt="{{ banner.name }}" width="50" />
+                <img src="{{ banner.image ? banner.image: 'assets/images/no-image.png' }}" alt="{{ banner.name }}" width="50" />
               </td>
               <td align="center">{{ banner.order }}</td>
               <td align="center" class="{{ banner.active == 1 ? 'has-text-success': 'has-text-danger' }}">{{ banner.active == 1 ? 'Sim': 'Não' }}</td>
@@ -204,7 +204,7 @@
                       </label>
                     </div>
                     <br />
-                    <img src="{{ banner.image }}" width="50" />
+                    <img src="{{ banner.image ? banner.image: 'assets/images/no-image.png' }}" width="50" />
                   </div>
 
                   <div class="field">

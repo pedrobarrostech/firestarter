@@ -25,11 +25,13 @@
               "./node_modules/bulma-extensions/bulma-pageloader/dist/css/bulma-pageloader.min.css",
               "./node_modules/datatables.net-dt/css/jquery.dataTables.css",
               "./node_modules/ng-pick-datetime/assets/style/picker.min.css",
+              "./node_modules/trumbowyg/dist/ui/trumbowyg.min.css",
               "src/styles.scss"
             ],
             "scripts": [
               "./node_modules/jquery/dist/jquery.min.js",
-              "./node_modules/datatables.net/js/jquery.dataTables.js"
+              "./node_modules/datatables.net/js/jquery.dataTables.js",
+              "./node_modules/trumbowyg/dist/trumbowyg.min.js"
             ]
           },
           "configurations": {

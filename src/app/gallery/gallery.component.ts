@@ -1,8 +1,11 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import * as firebase from 'firebase';
+import { AngularFireStorage, AngularFireUploadTask } from 'angularfire2/storage';
+import { AngularFirestore } from 'angularfire2/firestore';
+import { finalize, tap } from 'rxjs/operators';
 
 import { Photo } from '../core/_models/photo.model';
 import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
@@ -17,6 +20,7 @@ import { ScrollService } from '../core/_services/scroll.service';
 })
 export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   addPhotoForm: FormGroup;
+  downloadURL: Observable<string>;
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -25,11 +29,16 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   galleryEditImage = {};
   imageUploadStatus = true;
   isEditing = false;
+  isHovering: boolean;
   isLoading = true;
   // tslint:disable-next-line:no-input-rename
   @Input('parentId')
   parentId: string;
+  percentage: Observable<number>;
   photo = new Photo();
+  snapshot: Observable<any>;
+  subscription: Subscription;
+  task: AngularFireUploadTask;
 
   private imageEdit;
   private imageEditRef;
@@ -41,7 +50,9 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private _scrollService: ScrollService,
     private _galleryService: GalleryService,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    private storage: AngularFireStorage,
+    private db: AngularFirestore) {
   }
 
   addPhoto(): void {
@@ -112,6 +123,13 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       error => console.error(error),
       () => this.isLoading = false
+    );
+  }
+
+  isActive(snapshot): any {
+    return (
+      snapshot.state === 'running' &&
+      snapshot.bytesTransferred < snapshot.totalBytes
     );
   }
 
@@ -189,4 +207,55 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
     window.setTimeout(() => this.infoMsg.body = '', time);
   }
 
+  async startUpload(event: FileList): Promise<void> {
+    // The File object
+    const arr = [];
+    for (let i = 0; i < event.length; i++) {
+      arr.push(this.test(event.item(i)));
+    }
+    await Promise.all(arr);
+  }
+
+  async test(file): Promise<void> {
+    // Client-side validation example
+    if (file.type.split('/')[0] !== 'image') {
+      console.error('unsupported file type :( ');
+
+      return;
+    }
+
+    // The storage path
+    const path = `${UploadService.generateId()}${file.name}`;
+
+    // The main task
+    this.task = this.storage.upload(path, file);
+
+    // Progress monitoring
+    this.percentage = this.task.percentageChanges();
+    this.snapshot = this.task.snapshotChanges().pipe(
+      tap(snap => {
+        if (snap.bytesTransferred === snap.totalBytes) {
+          // Update firestore on completion
+          this.subscription = this.storage.ref(path).getDownloadURL()
+            .subscribe(
+              url => {
+                this.db.collection('photos').add(
+                  { name: 'Foto', link: '#', image: url, imageRef: path, order: 1, parentId: this.parentId })
+                  .then(
+                    () => console.warn('Success'),
+                    error => console.error(error)
+                  );
+              },
+              error => console.error(error),
+              () => this.subscription.unsubscribe()
+            );
+        }
+      }),
+      finalize(() => console.warn('hudashudhu'))
+    );
+  }
+
+  toggleHover(event: boolean): void {
+    this.isHovering = event;
+  }
 }
