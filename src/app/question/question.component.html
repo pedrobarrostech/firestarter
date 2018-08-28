@@ -1,0 +1,147 @@
+<div [@routerTransition]>
+  <h1>
+    <span class="icon has-text-success">
+      <i class="fas fa-question"></i>
+    </span> &nbsp;
+    Questões
+  </h1>
+
+  <hr />
+
+  <div *ngIf="isLoading">
+    <div>
+
+      <h3>
+        <span class="icon has-text-danger">
+          <i class="fas fa-plus"></i>
+        </span> &nbsp;
+        Adicionar novo
+      </h3>
+
+      <form [formGroup]="addQuestionForm" (ngSubmit)="addQuestion()">
+        <div class="field">
+          <label for="name" class="label">Nome</label>
+          <div class="control">
+            <input class="input" placeholder="Nome" name="name" formControlName="name" type="text" required />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="value" class="label">Tipo</label>
+          <div class="control">
+            <div class="select">
+              <select formControlName="type" [(ngModel)]="selectedValue" name="type" required>
+                <option *ngFor="let t of types" [ngValue]="t.type">{{t.name}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="field" *ngIf="selectedValue && selectedValue != 'text' && selectedValue != 'textarea'">
+          <label for="name" class="label">Valor</label>
+          <div class="control">
+            <input class="input" [(ngModel)]="newValue" name="newValue" type="text" />
+            <button type="button" class="button is-success" (click)="addValue(newValue)">
+              <i class="fa fa-plus"></i> &nbsp;
+            </button>
+          </div>
+        </div>
+
+        <div *ngFor="let v of values">
+          {{ v }}
+        </div>
+
+
+
+        <div class="field">
+          <button type="submit" class="button is-success" name="submit" [disabled]="!addQuestionForm.valid">
+            <i class="fa fa-plus"></i> &nbsp;
+            Adicionar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <hr>
+
+    <div *ngIf="questions">
+      <h3>
+        <span class="icon has-text-warning">
+          <i class="fas fa-question"></i>
+        </span> &nbsp;
+        Questões ({{ questions.length }})
+      </h3>
+
+      <div [hidden]="!infoMsg.body" class="notification is-{{ infoMsg.type }}" role="alert">
+        {{ infoMsg.body }}
+      </div>
+
+      <div class="table-flex">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped">
+          <thead class="thead-default">
+            <tr>
+              <th width="30%">Nome</th>
+              <th align="center" width="30%">Ações</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="questions.length > 0">
+            <tr *ngFor="let question of questions">
+              <td>{{ question.name }}</td>
+              <td align="center">
+                <button class="button is-small is-warning" (click)="enableEditing(question)">
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button class="button is-small is-danger" (click)="deleteQuestion(question)">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="isEditing">
+            <tr>
+              <td colspan="2">
+                <form #form="ngForm" (ngSubmit)="editQuestion(question)">
+                  <div class="field">
+                    <label for="name" class="label">Nome</label>
+                    <input class="input" type="text" name="name" placeholder="Name" [(ngModel)]="question.name" required>
+                  </div>
+
+                  <div class="field">
+                    <label for="value" class="label">Tipo</label>
+                    <div class="control">
+                      <div class="select">
+                        <select [(ngModel)]="question.type" name="type">
+                          <option *ngFor="let t of types" [ngValue]="t.type">{{t.name}}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label for="name" class="label">Valor</label>
+                    <input class="input" type="text" name="value" placeholder="Valor" [(ngModel)]="question.value">
+                  </div>
+
+                  <br />
+
+                  <div class="field">
+                    <button class="button is-success" type="submit" [disabled]="!form.form.valid">
+                      <i class="fa fa-floppy-o"></i> &nbsp; Salvar
+                    </button>
+                    <button class="button is-danger" (click)="cancelEditing()">
+                      <i class="fa fa-times"></i> &nbsp; Cancelar
+                    </button>
+                  </div>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading" class="loading">
+    <img src="assets/images/load.gif" alt="Carregando" />
+  </div>
+</div>

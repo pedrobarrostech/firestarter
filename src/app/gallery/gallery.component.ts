@@ -75,8 +75,23 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.sendInfoMsg('Edição de foto cancelada.', 'warning');
   }
 
+  async deleteAllPhotos(): Promise<any> {
+    await this.deleteAllPhotosAsPromise();
+  }
+
+  deleteAllPhotosAsPromise(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (window.confirm('Tem certeza que quer deletar todas as fotos?')) {
+        this.gallery.map(photo => {
+          this._galleryService.delete(photo.id).then(
+            () => UploadService.deleteFile(photo.imageRef));
+        });
+      }
+    });
+  }
+
   deletePhoto(photo): void {
-    if (window.confirm('Tem certeza que quer deletar este photo?')) {
+    if (window.confirm('Tem certeza que quer deletar este foto?')) {
       this._galleryService.delete(photo.id).then(
         () => {
           UploadService.deleteFile(photo.imageRef).then(
@@ -187,7 +202,7 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.dtElement && this.dtElement.dtInstance) {
       this.dtElement.dtInstance.then(
         (dtInstance: DataTables.Api) => {
-            // Destroy the table first
+          // Destroy the table first
           dtInstance.destroy();
           // Call the dtTrigger to rerender again
           this.dtTrigger.next();
@@ -208,54 +223,47 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async startUpload(event: FileList): Promise<void> {
-    // The File object
-    const arr = [];
-    for (let i = 0; i < event.length; i++) {
-      arr.push(this.test(event.item(i)));
-    }
-    await Promise.all(arr);
+    Array.from(event).forEach(async file => {
+      this.uploadImageAsPromise(file);
+    });
+
+    console.warn('done');
   }
 
-  async test(file): Promise<void> {
-    // Client-side validation example
-    if (file.type.split('/')[0] !== 'image') {
-      console.error('unsupported file type :( ');
+  toggleHover(event: boolean): void {
+    this.isHovering = event;
+  }
 
-      return;
-    }
+  uploadImageAsPromise(imageFile): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const path = `${UploadService.generateId()}${imageFile.name}`;
+      const storageRef = firebase.storage().ref(path);
+      // Upload file
+      const task = storageRef.put(imageFile);
 
-    // The storage path
-    const path = `${UploadService.generateId()}${file.name}`;
-
-    // The main task
-    this.task = this.storage.upload(path, file);
-
-    // Progress monitoring
-    this.percentage = this.task.percentageChanges();
-    this.snapshot = this.task.snapshotChanges().pipe(
-      tap(snap => {
-        if (snap.bytesTransferred === snap.totalBytes) {
-          // Update firestore on completion
-          this.subscription = this.storage.ref(path).getDownloadURL()
+      // Update progress bar
+      task.on('state_changed',
+          snapshot => {
+            console.warn(snapshot);
+          },
+          err => {
+            console.warn(err);
+          },
+          () => {
+            this.storage.ref(path).getDownloadURL()
             .subscribe(
               url => {
                 this.db.collection('photos').add(
                   { name: 'Foto', link: '#', image: url, imageRef: path, order: 1, parentId: this.parentId })
                   .then(
-                    () => console.warn('Success'),
+                    () => console.warn('Success upload'),
                     error => console.error(error)
                   );
               },
-              error => console.error(error),
-              () => this.subscription.unsubscribe()
+              error => console.error(error)
             );
-        }
-      }),
-      finalize(() => console.warn('hudashudhu'))
-    );
-  }
-
-  toggleHover(event: boolean): void {
-    this.isHovering = event;
+          }
+      );
+    });
   }
 }

@@ -22,6 +22,7 @@ import { ClientModule } from './client/client.module';
 import { ModalModule } from './modal/modal.module';
 import { BookingModule } from './booking/booking.module';
 import { EventGalleryModule } from './event-gallery/event-gallery.module';
+import { QuestionModule } from './question/question.module';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
@@ -46,6 +47,7 @@ import { AngularFireFunctionsModule } from 'angularfire2/functions';
     ModalModule,
     EventModule,
     BookingModule,
+    QuestionModule,
     EventGalleryModule,
     UploadExampleModule,
     AngularFireModule.initializeApp(environment.firebase),

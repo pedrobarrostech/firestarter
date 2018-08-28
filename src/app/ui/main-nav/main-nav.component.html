@@ -61,8 +61,14 @@
           </span> &nbsp; Modal
         </a>
 
-        <a class="navbar-item" routerLink="/logout" (click)="logout()">
+        <a class="navbar-item" routerLink="/questoes" routerLinkActive="active-page">
           <span class="icon has-text-warning">
+            <i class="fas fa-question"></i>
+          </span> &nbsp; Questões
+        </a>
+
+        <a class="navbar-item" routerLink="/logout" (click)="logout()">
+          <span class="icon has-text-danger">
             <i class="fas fa-power-off"></i>
           </span> &nbsp; Logout
         </a>
