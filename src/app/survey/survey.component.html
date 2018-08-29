@@ -154,8 +154,9 @@
                       <label>
                         <input type="checkbox"
                           value="{{q.id}}"
-                          [checked]="checkIfIsEnabled(q)"
-                        />
+                          name="questionsSelected"
+                          [checked]="checkIfIsEnabled(q, survey.questionsSelected)"
+                          (change)="updateCheckedOptions(survey.questionsSelected, $event)" />
                         {{ q.name }}
                       </label>
                     </div>

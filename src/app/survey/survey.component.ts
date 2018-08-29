@@ -62,8 +62,23 @@ export class SurveyComponent implements OnInit, OnDestroy, AfterViewInit {
     this.sendInfoMsg('Edição de enquete cancelada.', 'warning');
   }
 
-  checkIfIsEnabled(item): void {
-    // console.warn(item);
+  checkIfIsEnabled(item, list): boolean {
+    let index = -1;
+    // tslint:disable-next-line:forin
+    for (const q  in list) {
+      index = list.indexOf(item.id)
+      if (list[index] == item.id && index > -1) {
+        this.questions[q].checked = true;
+        // list.push(item.id);
+
+        return true;
+      } else {
+        // list.splice(q, 1);
+        this.questions[q].checked = false;
+
+        return false;
+      }
+    }
   }
 
   deleteSurvey(survey): void {
@@ -84,6 +99,7 @@ export class SurveyComponent implements OnInit, OnDestroy, AfterViewInit {
     this._surveyService.update(survey.id, survey).then(
       () => {
         this.isEditing = false;
+        // this.questions = [];
         this.sendInfoMsg('Enquete editado com sucesso.', 'success');
         this.rerender();
       },
@@ -93,7 +109,9 @@ export class SurveyComponent implements OnInit, OnDestroy, AfterViewInit {
 
   enableEditing(survey): void {
     this.isEditing = true;
-    survey.date = new Date(survey.date.toMillis());
+    survey.questionsSelected = survey.questionsSelected ? survey.questionsSelected : [];
+    // this.getQuestions();
+    // survey.date = new Date(survey.data.toMilis());
     this.survey = survey;
   }
 
@@ -134,7 +152,7 @@ export class SurveyComponent implements OnInit, OnDestroy, AfterViewInit {
       name: this.name,
       date: this.date,
       description: this.description,
-      questionsSelected: this.questionsSelected,
+      questionsSelected: null,
       active: this.active
     });
   }
@@ -167,5 +185,14 @@ export class SurveyComponent implements OnInit, OnDestroy, AfterViewInit {
     this.infoMsg.body = body;
     this.infoMsg.type = type;
     window.setTimeout(() => this.infoMsg.body = '', time);
+  }
+
+  updateCheckedOptions(option, event): void {
+    option
+      .map(q => {
+        if (q != event.target.value && option.indexOf(event.target.value) === -1) {
+          option.push(event.target.value);
+        }
+      });
   }
 }

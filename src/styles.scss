@@ -290,43 +290,16 @@ table.dataTable thead th, table.dataTable thead td, table.dataTable.no-footer {
   text-align: center;
   white-space: nowrap;
 }
-
-#DataTables_Table_0 > thead > tr > th:last-child,
-#DataTables_Table_1 > thead > tr > th:last-child,
-#DataTables_Table_2 > thead > tr > th:last-child,
-#DataTables_Table_3 > thead > tr > th:last-child,
-#DataTables_Table_4 > thead > tr > th:last-child,
-#DataTables_Table_5 > thead > tr > th:last-child,
-#DataTables_Table_6 > thead > tr > th:last-child,
-#DataTables_Table_7 > thead > tr > th:last-child,
-#DataTables_Table_8 > thead > tr > th:last-child,
-#DataTables_Table_9 > thead > tr > th:last-child,
-#DataTables_Table_10 > thead > tr > th:last-child,
-#DataTables_Table_11 > thead > tr > th:last-child,
-#DataTables_Table_12 > thead > tr > th:last-child,
-#DataTables_Table_13 > thead > tr > th:last-child,
-#DataTables_Table_14 > thead > tr > th:last-child
-{
-  width: 11% !important;
+@for $i from 0 through 50 {
+    #DataTables_Table_#{$i} > thead > tr > th:last-child {
+        width: 11% !important;
+    }
 }
 
-
-#DataTables_Table_0 form input,
-#DataTables_Table_1 form input,
-#DataTables_Table_2 form input,
-#DataTables_Table_3 form input,
-#DataTables_Table_4 form input,
-#DataTables_Table_5 form input,
-#DataTables_Table_6 form input,
-#DataTables_Table_7 form input,
-#DataTables_Table_8 form input,
-#DataTables_Table_9 form input,
-#DataTables_Table_10 form input,
-#DataTables_Table_11 form input,
-#DataTables_Table_12 form input,
-#DataTables_Table_13 form input,
-#DataTables_Table_14 form input {
-  width: 97%;
+@for $i from 0 through 50 {
+    #DataTables_Table_#{$i} form input {
+        width: 97%;
+    }
 }
 
 .dropzone {
