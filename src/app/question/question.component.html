@@ -37,21 +37,32 @@
           </div>
         </div>
 
-        <div class="field" *ngIf="selectedValue && selectedValue != 'text' && selectedValue != 'textarea'">
+
+        <div *ngIf="selectedValue && selectedValue != 'text' && selectedValue != 'textarea'">
           <label for="name" class="label">Valor</label>
-          <div class="control">
-            <input class="input" [(ngModel)]="newValue" name="newValue" type="text" />
-            <button type="button" class="button is-success" (click)="addValue(newValue)">
-              <i class="fa fa-plus"></i> &nbsp;
-            </button>
+          <div class="field has-addons">
+            <div class="control">
+              <input class="input" #newValue name="newValue" type="text"
+                (keyup.enter)="addValue(newValue.value)"
+                (blur)="addValue(newValue.value); newValue.value='' " 
+              />
+            </div>
+            <div class="control">
+              <button type="button" class="button is-success" (click)="addValue(newValue.value)">
+                <i class="fa fa-plus"></i> &nbsp;
+              </button>
+            </div>
           </div>
         </div>
 
-        <div *ngFor="let v of values">
-          {{ v }}
-        </div>
-
-
+        <ul>
+          <li *ngFor="let v of values; let i = index" [attr.data-index]="i">
+            {{ v }}  &nbsp; &nbsp; &nbsp;
+            <button type="button" class="button is-danger is-small" (click)="removeValue(i)">
+              <i class="fa fa-trash"></i> &nbsp;
+            </button>
+          </li>
+        </ul>
 
         <div class="field">
           <button type="submit" class="button is-success" name="submit" [disabled]="!addQuestionForm.valid">
@@ -117,10 +128,31 @@
                     </div>
                   </div>
 
-                  <div class="field">
+                  <div *ngIf="question.type && question.type != 'text' && question.type != 'textarea'">
                     <label for="name" class="label">Valor</label>
-                    <input class="input" type="text" name="value" placeholder="Valor" [(ngModel)]="question.value">
+                    <div class="field has-addons">
+                      <div class="control">
+                        <input class="input" #newValueEdit name="newValueEdit" type="text"
+                          (keyup.enter)="addValue(newValueEdit.value)"
+                          (blur)="addValue(newValueEdit.value); newValueEdit.value='' " 
+                        />
+                      </div>
+                      <div class="control">
+                        <button type="button" class="button is-success" (click)="addValue(newValueEdit.value)">
+                          <i class="fa fa-plus"></i> &nbsp;
+                        </button>
+                      </div>
+                    </div>
                   </div>
+
+                  <ul>
+                    <li *ngFor="let v of question.value; let i = index" [attr.data-index]="i">
+                      {{ v }}  &nbsp; &nbsp; &nbsp;
+                      <button type="button" class="button is-danger is-small" (click)="removeValue(i)">
+                        <i class="fa fa-trash"></i> &nbsp;
+                      </button>
+                    </li>
+                  </ul>
 
                   <br />
 

@@ -23,7 +23,6 @@ export class QuestionComponent implements OnInit, OnDestroy, AfterViewInit {
   imageUploadStatus = true;
   isEditing = false;
   isLoading = true;
-  newValue = '';
   question = {};
   questions: any = [];
   types = [
@@ -47,8 +46,10 @@ export class QuestionComponent implements OnInit, OnDestroy, AfterViewInit {
 
   addQuestion(): void {
     window.setTimeout(() => {
+      this.addQuestionForm.get('value').setValue(this.values);
       this._questionService.create(this.addQuestionForm.value).then(
         () => {
+          this.values = [];
           this.addQuestionForm.reset();
           this.rerender();
           this.scrollTo('table');
@@ -58,8 +59,10 @@ export class QuestionComponent implements OnInit, OnDestroy, AfterViewInit {
     }, 1000);
   }
 
-  addValue(value): void {
-    this.values.push(this.newValue);
+  addValue(newValue: string): void {
+    if (newValue) {
+      this.values.push(newValue);
+    }
   }
 
   cancelEditing(): void {
@@ -82,9 +85,10 @@ export class QuestionComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   editQuestion(question): void {
-
+    question.value = this.values;
     this._questionService.update(question.id, question).then(
-      res => {
+      () => {
+        this.values = [];
         this.isEditing = false;
         this.sendInfoMsg('Question editado com sucesso.', 'success');
         this.rerender();
@@ -96,6 +100,7 @@ export class QuestionComponent implements OnInit, OnDestroy, AfterViewInit {
   enableEditing(question): void {
     this.isEditing = true;
     this.question = question;
+    this.values = question.value;
   }
 
   getQuestions(): void {
@@ -125,6 +130,12 @@ export class QuestionComponent implements OnInit, OnDestroy, AfterViewInit {
       type: this.type,
       value: this.value
     });
+  }
+
+  removeValue(index: number): void {
+    if (index > -1) {
+      this.values.splice(index, 1);
+    }
   }
 
   rerender(): void {
