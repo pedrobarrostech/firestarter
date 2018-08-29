@@ -6,16 +6,18 @@ import { DataTableDirective } from 'angular-datatables';
 import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
 import { routerTransition } from '../core/_configs/router-transition.config';
 import { ScrollService } from '../core/_services/scroll.service';
-import { QuestionService } from './question.service';
+import { SurveyService } from './survey.service';
+import { QuestionService } from '../question/question.service';
+
 @Component({
   animations: [ routerTransition() ],
-  selector: 'app-question',
-  templateUrl: './question.component.html',
-  styleUrls: ['./question.component.scss'],
+  selector: 'app-survey',
+  templateUrl: './survey.component.html',
+  styleUrls: ['./survey.component.scss'],
   encapsulation: ViewEncapsulation.Emulated
 })
-export class QuestionComponent implements OnInit, OnDestroy, AfterViewInit {
-  addQuestionForm: FormGroup;
+export class SurveyComponent implements OnInit, OnDestroy, AfterViewInit {
+  addSurveyForm: FormGroup;
   bannerEditImage = {};
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
@@ -24,60 +26,52 @@ export class QuestionComponent implements OnInit, OnDestroy, AfterViewInit {
   imageUploadStatus = true;
   isEditing = false;
   isLoading = true;
-  question = {};
   questions: any = [];
-  types = [
-    { id: 1, name: 'Texto', type: 'text' },
-    { id: 2, name: 'Texto longo', type: 'textarea' },
-    { id: 3, name: 'Opção', type: 'radio' },
-    { id: 4, name: 'Checkbox', type: 'checkbox' }
-  ];
-  values = [];
+  survey = {};
+  surveys: any = [];
 
+  private active = new FormControl('', Validators.required);
+  private date = new FormControl('', Validators.required);
+  private description = new FormControl('', Validators.required);
   private infoMsg = { body: '', type: 'info'};
   private name = new FormControl('', Validators.required);
-  private type = new FormControl('', Validators.required);
-  private value = new FormControl('');
+  private questionsSelected = new FormControl('');
 
   constructor(
     private _questionService: QuestionService,
+    private _surveyService: SurveyService,
     private _scrollService: ScrollService,
     private formBuilder: FormBuilder
   ) { }
 
-  addQuestion(): void {
-    window.setTimeout(() => {
-      this.addQuestionForm.get('value').setValue(this.values);
-      this._questionService.create(this.addQuestionForm.value).then(
-        () => {
-          this.values = [];
-          this.addQuestionForm.reset();
-          this.rerender();
-          this.scrollTo('table');
-        },
-        error => console.error(error)
-      );
-    }, 1000);
-  }
-
-  addValue(newValue: string): void {
-    if (newValue) {
-      this.values.push(newValue);
-    }
+  addSurvey(): void {
+    this.addSurveyForm.get('questionsSelected').setValue(this.selectedOptions());
+    this._surveyService.create(this.addSurveyForm.value).then(
+      () => {
+        this.addSurveyForm.reset();
+        this.rerender();
+        this.scrollTo('table');
+      },
+      error => console.error(error)
+    );
   }
 
   cancelEditing(): void {
     this.isEditing = false;
-    this.question = {};
-    this.sendInfoMsg('Edição de question cancelada.', 'warning');
+    this.survey = {};
+    this.sendInfoMsg('Edição de enquete cancelada.', 'warning');
   }
 
-  deleteQuestion(question): void {
-    if (window.confirm('Tem certeza que quer deletar este question?')) {
-      this._questionService.delete(question.id).then(
+  checkIfIsEnabled(item): void {
+    // console.warn(item);
+  }
+
+  deleteSurvey(survey): void {
+    if (window.confirm('Tem certeza que quer deletar esta enquete?')) {
+      this._surveyService.delete(survey.id).then(
         () => {
-          this.sendInfoMsg('Question deletado com sucesso.', 'success');
-          this.getQuestions();
+          this.sendInfoMsg('Enquete deletado com sucesso.', 'success');
+          this.getSurveys();
           this.rerender();
         },
         error => console.error(error)
@@ -85,29 +79,38 @@ export class QuestionComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  editQuestion(question): void {
-    question.value = this.values;
-    this._questionService.update(question.id, question).then(
+  editSurvey(survey): void {
+    survey.questionsSelected = this.selectedOptions();
+    this._surveyService.update(survey.id, survey).then(
       () => {
-        this.values = [];
         this.isEditing = false;
-        this.sendInfoMsg('Question editado com sucesso.', 'success');
+        this.sendInfoMsg('Enquete editado com sucesso.', 'success');
         this.rerender();
       },
       error => console.error(error)
     );
   }
 
-  enableEditing(question): void {
+  enableEditing(survey): void {
     this.isEditing = true;
-    this.question = question;
-    this.values = question.value;
+    survey.date = new Date(survey.date.toMillis());
+    this.survey = survey;
   }
 
   getQuestions(): void {
     this._questionService.getData().subscribe(
       data => {
         this.questions = data;
+      },
+      error => console.error(error),
+      () => this.isLoading = false
+    );
+  }
+
+  getSurveys(): void {
+    this._surveyService.getData().subscribe(
+      data => {
+        this.surveys = data;
         this.rerender();
       },
       error => console.error(error),
@@ -125,18 +128,15 @@ export class QuestionComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     this.dtOptions = DATATABLES_CONFIG;
+    this.getSurveys();
     this.getQuestions();
-    this.addQuestionForm = this.formBuilder.group({
+    this.addSurveyForm = this.formBuilder.group({
       name: this.name,
-      type: this.type,
-      value: this.value
+      date: this.date,
+      description: this.description,
+      questionsSelected: this.questionsSelected,
+      active: this.active
     });
-  }
-
-  removeValue(index: number): void {
-    if (index > -1) {
-      this.values.splice(index, 1);
-    }
   }
 
   rerender(): void {
@@ -155,6 +155,12 @@ export class QuestionComponent implements OnInit, OnDestroy, AfterViewInit {
 
   scrollTo(id): any {
     this._scrollService.scrollTo(id);
+  }
+
+  selectedOptions(): any {
+    return this.questions
+              .filter(opt => opt.checked)
+              .map(opt => opt.id);
   }
 
   sendInfoMsg(body, type, time = 3000): void {

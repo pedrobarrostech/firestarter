@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
@@ -13,7 +13,8 @@ import { UploadService } from '../core/_services/upload.service';
   animations: [ routerTransition() ],
   selector: 'app-banner',
   templateUrl: './banner.component.html',
-  styleUrls: ['./banner.component.scss']
+  styleUrls: ['./banner.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class BannerComponent implements OnInit, OnDestroy, AfterViewInit {
   addBannerForm: FormGroup;

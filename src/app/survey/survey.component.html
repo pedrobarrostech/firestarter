@@ -1,0 +1,198 @@
+<div [@routerTransition]>
+  <h1>
+    <span class="icon has-text-success">
+      <i class="fas fa-question-circle"></i>
+    </span> &nbsp;
+    Enquetes
+  </h1>
+
+  <hr />
+
+  <div *ngIf="isLoading">
+    <div>
+
+      <h3>
+        <span class="icon has-text-danger">
+          <i class="fas fa-plus"></i>
+        </span> &nbsp;
+        Adicionar novo
+      </h3>
+
+      <form [formGroup]="addSurveyForm" (ngSubmit)="addSurvey()">
+        <div class="field">
+          <label for="name" class="label">Nome</label>
+          <div class="control">
+            <input class="input" placeholder="Nome" name="name" formControlName="name" type="text" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="date" class="label">Data</label>
+          <div class="control">
+            <p class="control has-icons-left">
+              <input [owlDateTime]="date" class="input" [owlDateTimeTrigger]="date" name="date" formControlName="date">
+              <span class="icon is-small is-left">
+                <i class="fas fa-calendar-alt"></i>
+              </span>
+            </p>
+            <owl-date-time [pickerType]="'calendar'" [startView]="'year'" #date></owl-date-time>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="description" class="label">Descrição</label>
+          <div class="control">
+            <ngx-trumbowyg-editor name="description" formControlName="description"></ngx-trumbowyg-editor>
+          </div>
+        </div>
+
+        <div *ngIf="questions">
+          <label for="name" class="label">Perguntas contidas na enquete</label>
+          <div *ngFor="let q of questions; let i = index" [attr.data-index]="i">
+            <label>
+              <input type="checkbox"
+                      name="questionsSelected"
+                      formControlName="questionsSelected"
+                      value="{{q.id}}"
+                      [(ngModel)]="q.checked"/>
+              {{ q.name }}
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="active" class="label">Ativo</label>
+          <div class="control">
+            <label class="radio">
+              <input type="radio" name="active" formControlName="active" value="1" /> Sim
+            </label>
+            <label class="radio">
+              <input type="radio" name="active" formControlName="active" value="0" /> Não
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <button type="submit" class="button is-success" name="submit" [disabled]="!addSurveyForm.valid">
+            <i class="fa fa-plus"></i> &nbsp;
+            Adicionar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <hr>
+
+    <div *ngIf="surveys">
+      <h3>
+        <span class="icon has-text-warning">
+          <i class="fas fa-question-circle"></i>
+        </span> &nbsp;
+        Enquetes ({{ surveys.length }})
+      </h3>
+
+      <div [hidden]="!infoMsg.body" class="notification is-{{ infoMsg.type }}" role="alert">
+        {{ infoMsg.body }}
+      </div>
+
+      <div class="table-flex">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped">
+          <thead class="thead-default">
+            <tr>
+              <th width="30%">Nome</th>
+              <th width="20%">Ativo</th>
+              <th align="center" width="30%">Ações</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="surveys.length > 0">
+            <tr *ngFor="let survey of surveys">
+              <td>{{ survey.name }}</td>
+              <td align="center" class="{{ survey.active == 1 ? 'has-text-success': 'has-text-danger' }}">{{ survey.active == 1 ? 'Sim': 'Não' }}</td>
+              <td align="center">
+                <button class="button is-small is-warning" (click)="enableEditing(survey)">
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button class="button is-small is-danger" (click)="deleteSurvey(survey)">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="isEditing">
+            <tr>
+              <td colspan="3">
+                <form #form="ngForm" (ngSubmit)="editSurvey(survey)">
+                  <div class="field">
+                    <label for="name" class="label">Nome</label>
+                    <input class="input" type="text" name="name" placeholder="Name" [(ngModel)]="survey.name" required>
+                  </div>
+
+                  <div class="field">
+                    <label for="date" class="label">Data</label>
+                    <div class="control">
+                      <p class="control has-icons-left">
+                        <input class="input" [owlDateTime]="date" name="date" [owlDateTimeTrigger]="date" [(ngModel)]="survey.date">
+
+                        <span class="icon is-small is-left">
+                          <i class="fas fa-calendar-alt"></i>
+                        </span>
+                      </p>
+                      <owl-date-time [pickerType]="'calendar'" [startView]="'year'" #date></owl-date-time>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label for="description" class="label">Descrição</label>
+                    <div class="control">
+                      <ngx-trumbowyg-editor name="description" [(ngModel)]="survey.description"></ngx-trumbowyg-editor>
+                    </div>
+                  </div>
+
+                  <div *ngIf="questions">
+                    <label for="name" class="label">Perguntas contidas na enquete</label>
+                    <div *ngFor="let q of questions; let i = index" [attr.data-index]="i">
+                      <label>
+                        <input type="checkbox"
+                          value="{{q.id}}"
+                          [checked]="checkIfIsEnabled(q)"
+                        />
+                        {{ q.name }}
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label for="active" class="label">Ativo</label>
+                    <div class="control">
+                      <label class="radio">
+                        <input type="radio" name="active" [(ngModel)]="survey.active" value="1" /> Sim
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="active" [(ngModel)]="survey.active" value="0" /> Não
+                      </label>
+                    </div>
+                  </div>
+
+                  <br />
+
+                  <div class="field">
+                    <button class="button is-success" type="submit" [disabled]="!form.form.valid">
+                      <i class="fa fa-floppy-o"></i> &nbsp; Salvar
+                    </button>
+                    <button class="button is-danger" (click)="cancelEditing()">
+                      <i class="fa fa-times"></i> &nbsp; Cancelar
+                    </button>
+                  </div>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading" class="loading">
+    <img src="assets/images/load.gif" alt="Carregando" />
+  </div>
+</div>

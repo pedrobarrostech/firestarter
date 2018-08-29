@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AuthService } from '../../core/_services/auth.service';
@@ -9,7 +9,8 @@ type FormErrors = { [u in UserFields]: string };
 @Component({
   selector: 'login-form',
   templateUrl: './login-form.component.html',
-  styleUrls: ['./login-form.component.scss']
+  styleUrls: ['./login-form.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class LoginFormComponent implements OnInit {
 

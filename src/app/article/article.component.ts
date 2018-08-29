@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ArticleService } from './article.service';
 import { UploadService } from '../core/_services/upload.service';
@@ -12,7 +12,8 @@ import { ScrollService } from '../core/_services/scroll.service';
   animations: [ routerTransition() ],
   selector: 'app-article',
   templateUrl: './article.component.html',
-  styleUrls: ['./article.component.scss']
+  styleUrls: ['./article.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class ArticleComponent implements OnInit, OnDestroy, AfterViewInit {
   addArticleForm: FormGroup;

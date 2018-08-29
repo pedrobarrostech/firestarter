@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import * as firebase from 'firebase';
@@ -13,7 +13,8 @@ import { ScrollService } from '../core/_services/scroll.service';
   animations: [ routerTransition() ],
   selector: 'app-minibanner',
   templateUrl: './minibanner.component.html',
-  styleUrls: ['./minibanner.component.scss']
+  styleUrls: ['./minibanner.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class MinibannerComponent implements OnInit, OnDestroy, AfterViewInit {
   addMinibannerForm: FormGroup;

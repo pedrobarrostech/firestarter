@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataTableDirective } from 'angular-datatables';
 import { ActivatedRoute } from '@angular/router';
@@ -14,7 +14,8 @@ import { EventService } from '../event/event.service';
   animations: [ routerTransition() ],
   selector: 'app-booking',
   templateUrl: './booking.component.html',
-  styleUrls: ['./booking.component.scss']
+  styleUrls: ['./booking.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class BookingComponent implements OnInit, OnDestroy, AfterViewInit {
   addBookingForm: FormGroup;

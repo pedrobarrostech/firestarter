@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
@@ -11,7 +11,8 @@ import { ClientService } from './client.service';
   animations: [ routerTransition() ],
   selector: 'app-client',
   templateUrl: './client.component.html',
-  styleUrls: ['./client.component.scss']
+  styleUrls: ['./client.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class ClientComponent implements OnInit, OnDestroy, AfterViewInit {
   addClientForm: FormGroup;

@@ -8,6 +8,11 @@ import { AppRoute } from './app.route';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { AngularFireModule } from 'angularfire2';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { AngularFireStorageModule } from 'angularfire2/storage';
+import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AngularFireFunctionsModule } from 'angularfire2/functions';
 
 import { UploadExampleModule } from './upload-example/upload-example.module';
 import { UiModule } from './ui/ui.module';
@@ -23,12 +28,7 @@ import { ModalModule } from './modal/modal.module';
 import { BookingModule } from './booking/booking.module';
 import { EventGalleryModule } from './event-gallery/event-gallery.module';
 import { QuestionModule } from './question/question.module';
-
-import { AngularFireModule } from 'angularfire2';
-import { AngularFirestoreModule } from 'angularfire2/firestore';
-import { AngularFireStorageModule } from 'angularfire2/storage';
-import { AngularFireAuthModule } from 'angularfire2/auth';
-import { AngularFireFunctionsModule } from 'angularfire2/functions';
+import { SurveyModule } from './survey/survey.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -48,6 +48,7 @@ import { AngularFireFunctionsModule } from 'angularfire2/functions';
     EventModule,
     BookingModule,
     QuestionModule,
+    SurveyModule,
     EventGalleryModule,
     UploadExampleModule,
     AngularFireModule.initializeApp(environment.firebase),

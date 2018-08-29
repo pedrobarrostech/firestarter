@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import {
   AngularFireStorage,
   AngularFireUploadTask
@@ -10,7 +10,8 @@ import { finalize, tap } from 'rxjs/operators';
 @Component({
   selector: 'upload-example',
   templateUrl: './upload-example.component.html',
-  styleUrls: ['./upload-example.component.scss']
+  styleUrls: ['./upload-example.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class UploadExampleComponent {
 

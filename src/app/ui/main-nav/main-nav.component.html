@@ -67,8 +67,14 @@
           </span> &nbsp; Questões
         </a>
 
-        <a class="navbar-item" routerLink="/logout" (click)="logout()">
+        <a class="navbar-item" routerLink="/enquetes" routerLinkActive="active-page">
           <span class="icon has-text-danger">
+            <i class="fas fa-question-circle"></i>
+          </span> &nbsp; Enquetes
+        </a>
+
+        <a class="navbar-item" routerLink="/logout" (click)="logout()">
+          <span class="icon has-text-primary">
             <i class="fas fa-power-off"></i>
           </span> &nbsp; Logout
         </a>

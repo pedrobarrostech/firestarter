@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../core/_services/auth.service';
@@ -8,7 +8,8 @@ import { routerTransition } from '../core/_configs/router-transition.config';
   animations: [ routerTransition() ],
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class LoginComponent {
 

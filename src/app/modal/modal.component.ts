@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalService } from './modal.service';
 import { UploadService } from '../core/_services/upload.service';
@@ -13,7 +13,8 @@ import { routerTransition } from '../core/_configs/router-transition.config';
   animations: [ routerTransition() ],
   selector: 'app-modal',
   templateUrl: './modal.component.html',
-  styleUrls: ['./modal.component.scss']
+  styleUrls: ['./modal.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class ModalComponent implements OnInit, OnDestroy, AfterViewInit {
   active = new FormControl('', Validators.required);

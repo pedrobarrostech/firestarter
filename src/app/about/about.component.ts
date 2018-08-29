@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AboutService } from './about.service';
 import { UploadService } from '../core/_services/upload.service';
@@ -13,7 +13,8 @@ import { routerTransition } from '../core/_configs/router-transition.config';
   animations: [ routerTransition() ],
   selector: 'app-about',
   templateUrl: './about.component.html',
-  styleUrls: ['./about.component.scss']
+  styleUrls: ['./about.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class AboutComponent implements OnInit, OnDestroy, AfterViewInit {
   about = new About();

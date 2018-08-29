@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataTableDirective } from 'angular-datatables';
 import { Router } from '@angular/router';
@@ -14,7 +14,8 @@ import { routerTransition } from '../core/_configs/router-transition.config';
   animations: [ routerTransition() ],
   selector: 'app-event',
   templateUrl: './event.component.html',
-  styleUrls: ['./event.component.scss']
+  styleUrls: ['./event.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
   addEventForm: FormGroup;
