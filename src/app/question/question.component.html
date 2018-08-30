@@ -31,7 +31,7 @@
           <div class="control">
             <div class="select">
               <select formControlName="type" [(ngModel)]="selectedValue" name="type" required>
-                <option *ngFor="let t of types" [ngValue]="t.type">{{t.name}}</option>
+                <option *ngFor="let t of types" [ngValue]="t.type">{{ t.name }}</option>
               </select>
             </div>
           </div>
@@ -122,7 +122,7 @@
                     <div class="control">
                       <div class="select">
                         <select [(ngModel)]="question.type" name="type">
-                          <option *ngFor="let t of types" [ngValue]="t.type">{{t.name}}</option>
+                          <option *ngFor="let t of types" [ngValue]="t.type">{{ t.name }}</option>
                         </select>
                       </div>
                     </div>

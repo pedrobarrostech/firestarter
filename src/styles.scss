@@ -297,7 +297,7 @@ table.dataTable thead th, table.dataTable thead td, table.dataTable.no-footer {
 }
 
 @for $i from 0 through 50 {
-    #DataTables_Table_#{$i} form input {
+    #DataTables_Table_#{$i} form {
         width: 97%;
     }
 }

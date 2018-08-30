@@ -5,7 +5,6 @@ import { DataTableDirective } from 'angular-datatables';
 import * as firebase from 'firebase';
 import { AngularFireStorage, AngularFireUploadTask } from 'angularfire2/storage';
 import { AngularFirestore } from 'angularfire2/firestore';
-import { finalize, tap } from 'rxjs/operators';
 
 import { Photo } from '../core/_models/photo.model';
 import { DATATABLES_CONFIG } from '../core/_configs/datatable-pt-br.config';
@@ -85,7 +84,16 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
       if (window.confirm('Tem certeza que quer deletar todas as fotos?')) {
         this.gallery.map(photo => {
           this._galleryService.delete(photo.id).then(
-            () => UploadService.deleteFile(photo.imageRef));
+            () => {
+              UploadService.deleteFile(photo.imageRef).then(
+                () => {
+                  console.warn(`${photo.id} deletada com sucesso`);
+                },
+                error => console.error(error)
+              );
+            },
+            error => console.error(error)
+          );
         });
       }
     });
@@ -225,7 +233,11 @@ export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async startUpload(event: FileList): Promise<void> {
     Array.from(event).forEach(async file => {
-      this.uploadImageAsPromise(file);
+      this.uploadImageAsPromise(file)
+      .then(
+        () => console.warn('Upload success'),
+        error => console.error(error)
+      );
     });
 
     console.warn('done');

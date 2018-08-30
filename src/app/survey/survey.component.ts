@@ -27,6 +27,7 @@ export class SurveyComponent implements OnInit, OnDestroy, AfterViewInit {
   isEditing = false;
   isLoading = true;
   questions: any = [];
+  questionsEdit: any = [];
   survey = {};
   surveys: any = [];
 
@@ -35,7 +36,6 @@ export class SurveyComponent implements OnInit, OnDestroy, AfterViewInit {
   private description = new FormControl('', Validators.required);
   private infoMsg = { body: '', type: 'info'};
   private name = new FormControl('', Validators.required);
-  private questionsSelected = new FormControl('');
 
   constructor(
     private _questionService: QuestionService,
@@ -49,6 +49,7 @@ export class SurveyComponent implements OnInit, OnDestroy, AfterViewInit {
     this._surveyService.create(this.addSurveyForm.value).then(
       () => {
         this.addSurveyForm.reset();
+        this.addSurveyForm.get('description').setValue('');
         this.rerender();
         this.scrollTo('table');
       },
@@ -66,8 +67,8 @@ export class SurveyComponent implements OnInit, OnDestroy, AfterViewInit {
     let index = -1;
     // tslint:disable-next-line:forin
     for (const q  in list) {
-      index = list.indexOf(item.id)
-      if (list[index] == item.id && index > -1) {
+      index = list.indexOf(item.id);
+      if (list[index] === item.id && index > -1) {
         this.questions[q].checked = true;
         // list.push(item.id);
 
@@ -95,7 +96,7 @@ export class SurveyComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   editSurvey(survey): void {
-    survey.questionsSelected = this.selectedOptions();
+    survey.questionsSelected = this.questionsEdit;
     this._surveyService.update(survey.id, survey).then(
       () => {
         this.isEditing = false;
@@ -108,10 +109,8 @@ export class SurveyComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   enableEditing(survey): void {
+    survey.date = new Date(survey.date.toMillis());
     this.isEditing = true;
-    survey.questionsSelected = survey.questionsSelected ? survey.questionsSelected : [];
-    // this.getQuestions();
-    // survey.date = new Date(survey.data.toMilis());
     this.survey = survey;
   }
 
@@ -188,11 +187,14 @@ export class SurveyComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   updateCheckedOptions(option, event): void {
-    option
-      .map(q => {
-        if (q != event.target.value && option.indexOf(event.target.value) === -1) {
-          option.push(event.target.value);
-        }
-      });
+    const index = option.indexOf(event.target.value);
+
+    if (index === -1) {
+      option.push(event.target.value);
+    } else {
+      option.splice(index, 1);
+    }
+
+    this.questionsEdit = option;
   }
 }
