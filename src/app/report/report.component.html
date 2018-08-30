@@ -1,0 +1,42 @@
+<div [@routerTransition]>
+
+  <div *ngIf="isLoading">
+    <h3>
+      <span class="icon has-text-warning">
+        <i class="fas fa-chart-pie"></i>
+      </span> &nbsp;
+      Relatórios ({{ surveys.length }})
+    </h3>
+
+    <div [hidden]="!infoMsg.body" class="notification is-{{ infoMsg.type }}" role="alert">
+      {{ infoMsg.body }}
+    </div>
+
+    <div class="table-flex">
+      <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped">
+        <thead class="thead-default">
+          <tr>
+            <th width="30%">Enquete</th>
+            <th width="20%">Ativo</th>
+            <th align="center" width="30%">Ações</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="surveys.length > 0">
+          <tr *ngFor="let survey of surveys">
+            <td>{{ survey.name }}</td>
+            <td align="center" class="{{ survey.active == 1 ? 'has-text-success': 'has-text-danger' }}">{{ survey.active == 1 ? 'Sim': 'Não' }}</td>
+            <td align="center">
+              <button class="button is-small is-success" (click)="viewReport(survey)">
+                <i class="fa fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading" class="loading">
+    <img src="assets/images/load.gif" alt="Carregando" />
+  </div>
+</div>

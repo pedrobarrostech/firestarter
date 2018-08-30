@@ -378,3 +378,13 @@ progress::-webkit-progress-value {
 table.dataTable, table.dataTable th, table.dataTable td {
   box-sizing: border-box;
 }
+
+
+a.navbar-item, .navbar-link {
+    border-left: 1px solid #0275d8;
+    padding: 0.5rem 0.5rem;
+}
+
+a.navbar-item:first-child, .navbar-link:first-child {
+    border-left: none;
+}

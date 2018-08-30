@@ -1,0 +1,28 @@
+<div [@routerTransition]>
+
+  <h1>
+    <span class="icon has-text-warning">
+      <i class="fas fa-chart-pie"></i>
+    </span> &nbsp;
+    Relatório
+  </h1>
+
+  <h2>
+    <span class="icon has-text-success">
+      <i class="fas fa-question"></i>
+    </span> &nbsp;
+    Perguntas & Respostas
+  </h2>
+
+  <br />
+
+  <div *ngFor="let question of questions">
+    <h3>{{ question.name }}</h3>
+    <div *ngFor="let answer of answers">
+      <p *ngIf="answer.questionId == question.id">
+        {{ answer.value }}
+      </p>
+    </div>
+    <br />
+  </div>
+</div>

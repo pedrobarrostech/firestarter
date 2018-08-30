@@ -14,6 +14,7 @@ import { AuthGuard } from './_guards/auth.guard';
 import { AuthService } from './_services/auth.service';
 import { NotifyService } from './_services/notify.service';
 import { ScrollService } from './_services/scroll.service';
+import { AnswerService } from './_services/answer.service';
 import { DropZoneDirective } from './upload/drop-zone.directive';
 import { FileSizePipe } from './upload/file-size.pipe';
 
@@ -48,7 +49,8 @@ const SERVICES = [
   AuthService,
   UploadService,
   NotifyService,
-  ScrollService
+  ScrollService,
+  AnswerService
 ];
 
 @NgModule({

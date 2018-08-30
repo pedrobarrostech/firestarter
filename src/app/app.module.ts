@@ -29,6 +29,7 @@ import { BookingModule } from './booking/booking.module';
 import { EventGalleryModule } from './event-gallery/event-gallery.module';
 import { QuestionModule } from './question/question.module';
 import { SurveyModule } from './survey/survey.module';
+import { ReportModule } from './report/report.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -49,6 +50,7 @@ import { SurveyModule } from './survey/survey.module';
     BookingModule,
     QuestionModule,
     SurveyModule,
+    ReportModule,
     EventGalleryModule,
     UploadExampleModule,
     AngularFireModule.initializeApp(environment.firebase),

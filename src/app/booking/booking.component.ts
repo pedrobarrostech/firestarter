@@ -40,11 +40,11 @@ export class BookingComponent implements OnInit, OnDestroy, AfterViewInit {
   private phone = new FormControl('', Validators.required);
 
   constructor(
-    private route: ActivatedRoute,
+    private _scrollService: ScrollService,
     private _bookingService: BookingService,
     private _eventService: EventService,
     private formBuilder: FormBuilder,
-    private _scrollService: ScrollService
+    private route: ActivatedRoute
   ) { }
 
   addBooking(): void {
