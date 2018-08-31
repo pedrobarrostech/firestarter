@@ -14,6 +14,8 @@ import { QuestionService } from '../../question/question.service';
 })
 export class ReportDetailComponent implements OnInit {
   answers: any = [];
+  answersCountage: any = [];
+  data: any;
   id: string;
   isLoading = true;
   questions: any = [];
@@ -23,12 +25,22 @@ export class ReportDetailComponent implements OnInit {
     private _questionService: QuestionService,
     private _answerService: AnswerService,
     private route: ActivatedRoute
-  ) { }
+  ) {
+  }
 
   getAnwsers(id): void {
     this._answerService.getAnswerBySurveyId(id).subscribe(
       data => {
         this.answers = data;
+
+        if (this.answers.length > 0) {
+          this.answersCountage = this.answers.reduce((obj, answer) => {
+            obj[answer.questionId] = obj[answer.group] || [];
+            obj[answer.questionId].push([answer.value, answer.count ]);
+
+            return obj;
+          }, {});
+        }
       },
       error => console.error(error),
       () => this.isLoading = false

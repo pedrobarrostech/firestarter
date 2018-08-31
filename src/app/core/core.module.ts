@@ -9,6 +9,11 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFireDatabaseModule } from 'angularfire2/database-deprecated';
 import { CommonModule } from '@angular/common';
 import { NgxTrumbowygModule } from 'ngx-trumbowyg';
+import { DateTimeAdapter, OWL_DATE_TIME_LOCALE, OwlDateTimeIntl, OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { NativeDateTimeAdapter } from 'ng-pick-datetime/date-time/adapter/native-date-time-adapter.class';
+import { GoogleChartsModule } from 'angular-google-charts';
+
+import { DatepickerPtBrConfig } from './_configs/datepicker-pt-br.config';
 import { UploadService } from './_services/upload.service';
 import { AuthGuard } from './_guards/auth.guard';
 import { AuthService } from './_services/auth.service';
@@ -29,7 +34,10 @@ const MODULES = [
   DataTablesModule,
   AngularFireAuthModule,
   AngularFireDatabaseModule,
-  NgxTrumbowygModule
+  NgxTrumbowygModule,
+  OwlDateTimeModule,
+  OwlNativeDateTimeModule,
+  GoogleChartsModule
 ];
 
 const PIPES = [
@@ -50,7 +58,10 @@ const SERVICES = [
   UploadService,
   NotifyService,
   ScrollService,
-  AnswerService
+  AnswerService,
+  {provide: OWL_DATE_TIME_LOCALE, useValue: 'pt-br'},
+  {provide: DateTimeAdapter, useClass: NativeDateTimeAdapter, deps: [OWL_DATE_TIME_LOCALE]},
+  {provide: OwlDateTimeIntl, useClass: DatepickerPtBrConfig}
 ];
 
 @NgModule({

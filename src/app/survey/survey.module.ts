@@ -10,16 +10,11 @@ import { DatepickerPtBrConfig } from '../core/_configs/datepicker-pt-br.config';
 @NgModule({
   imports: [
     CoreModule,
-    SurveyRoute,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule
+    SurveyRoute
   ],
   declarations: [SurveyComponent],
   providers: [
-    SurveyService,
-    {provide: OWL_DATE_TIME_LOCALE, useValue: 'pt-br'},
-    {provide: DateTimeAdapter, useClass: NativeDateTimeAdapter, deps: [OWL_DATE_TIME_LOCALE]},
-    {provide: OwlDateTimeIntl, useClass: DatepickerPtBrConfig}
+    SurveyService
   ]
 })
 export class SurveyModule { }

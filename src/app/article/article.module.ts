@@ -3,22 +3,14 @@ import { CoreModule } from '../core/core.module';
 import { ArticleComponent } from './article.component';
 import { ArticleRoute } from './article.route';
 import { ArticleService } from './article.service';
-import { DateTimeAdapter, OWL_DATE_TIME_LOCALE, OwlDateTimeIntl, OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
-import { NativeDateTimeAdapter } from 'ng-pick-datetime/date-time/adapter/native-date-time-adapter.class';
-import { DatepickerPtBrConfig } from '../core/_configs/datepicker-pt-br.config';
 @NgModule({
   imports: [
     CoreModule,
-    ArticleRoute,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule
+    ArticleRoute
   ],
   declarations: [ArticleComponent],
   providers: [
-    ArticleService,
-    {provide: OWL_DATE_TIME_LOCALE, useValue: 'pt-br'},
-    {provide: DateTimeAdapter, useClass: NativeDateTimeAdapter, deps: [OWL_DATE_TIME_LOCALE]},
-    {provide: OwlDateTimeIntl, useClass: DatepickerPtBrConfig}
+    ArticleService
   ]
 })
 export class ArticleModule { }

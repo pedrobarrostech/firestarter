@@ -20,9 +20,20 @@
     <h3>{{ question.name }}</h3>
     <div *ngFor="let answer of answers">
       <p *ngIf="answer.questionId == question.id">
-        {{ answer.value }}
+        {{ answer.count }} - {{ answer.value }}
       </p>
     </div>
+
+    <div *ngIf="answersCountage[question.id]">
+      <google-chart type="PieChart" [data]="answersCountage[question.id]"></google-chart>
+    </div>
+
+    <div *ngIf="!answersCountage[question.id]">
+      <p>Nenhuma resposta cadastrada para esta pergunta.</p>  
+    </div>
+    
     <br />
   </div>
 </div>
+
+

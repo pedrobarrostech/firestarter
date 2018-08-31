@@ -48,6 +48,7 @@
     "@ngx-translate/core": "^10.0.2",
     "@ngx-translate/http-loader": "^3.0.1",
     "angular-datatables": "^4.2.0",
+    "angular-google-charts": "0.0.9",
     "angularfire2": "5.0.0-rc.9",
     "core-js": "^2.5.7",
     "datatables.net": "^1.10.15",
